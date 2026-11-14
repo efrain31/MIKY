@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pastelerías Miky · Pastelería y alta repostería desde 1995</title>
+  <meta name="description" content="Pastelería y alta repostería fundada en Colima en 1995. Pasteles, pays, postres, helados y café elaborados al día, sin conservadores. Sucursales en Colima y Jalisco.">
+  <meta name="theme-color" content="#f7f3ee">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pastelerías Miky · Creando dulces momentos">
+  <meta property="og:description" content="Pasteles, pays, postres y helados elaborados al día, sin conservadores. Desde 1995.">
+  <meta property="og:image" content="img/hero-tartaleta.webp">
+  <link rel="icon" href="img/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="img/hero-tartaleta.webp">
+  <link rel="stylesheet" href="/css/styles.css?v=20261114123912">
+  <link rel="stylesheet" href="/css/store.css?v=1">
+  <link rel="stylesheet" href="/css/product-modal.css?v=20261114123912">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+  <!-- Encabezado (escritorio) -->
+  <header class="topbar">
+    <a href="#inicio" class="brand" aria-label="Pastelerías Miky, ir al inicio">
+      <img src="img/logo.webp" alt="Miky" width="480" height="265">
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#menu">Menú</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#helados">Helados</a>
+      <a href="#sucursales">Sucursales</a>
+    </nav>
+    <a href="#sucursales" class="btn btn-outline topbar-cta">Visítanos</a>
+    <div class="top-actions">
+      <button type="button" class="top-btn" data-open="account" aria-label="Mi cuenta">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>
+        <span class="account-label">Entrar</span>
+      </button>
+      <button type="button" class="top-btn" data-open="cart" aria-label="Mi pedido">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9zM9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="cart-count" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 1. Portada -->
+    <section id="inicio" class="hero" data-section>
+      <div class="floats" aria-hidden="true">
+        <img class="float" data-speed="0.25" data-rot="-8" style="--x:-3%;--y:4%;--w:min(230px,28vw);--r0:-12deg" src="img/cupcakes.webp" alt="">
+        <img class="float" data-speed="0.4" data-rot="10" style="--x:88%;--y:6%;--w:min(130px,20vw);--r0:14deg" src="img/pay-fresa-ind.webp" alt="">
+        <img class="float hide-sm" data-speed="0.15" data-rot="-6" style="--x:40%;--y:84%;--w:110px;--r0:-8deg" src="img/muffin-red.webp" alt="">
+        <span class="sprinkles" data-speed="0.5" style="--x:30%;--y:10%"></span>
+        <span class="sprinkles" data-speed="0.3" style="--x:92%;--y:62%"></span>
+        <span class="sprinkles hide-sm" data-speed="0.6" style="--x:12%;--y:78%"></span>
+      </div>
+
+      <div class="wrap hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow" data-cms="hero.eyebrow">Desde 1995 · Colima y Jalisco</p>
+          <h1 data-cms="hero.title">Pastelería y<br>alta repostería</h1>
+          <p class="hero-tagline" data-cms="hero.tagline">Creando dulces momentos.</p>
+          <p class="lead" data-cms="hero.lead">Todos nuestros productos están elaborados al día con los ingredientes más frescos y de alta calidad, sin conservadores.</p>
+          <div class="hero-actions">
+            <a href="#menu" class="btn btn-solid">Explora el menú</a>
+            <a href="#sucursales" class="btn btn-link">Encuentra tu sucursal →</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="plate-shadow"></div>
+          <img class="hero-main" data-cms-img="hero.image" data-spin="0.06" src="img/hero-tartaleta.webp" alt="Tartaleta de frutas naturales vista desde arriba" width="1000" height="929">
+          <img class="hero-side float-in" data-cms-img="hero.side" data-speed="-0.12" src="img/pastel-zanahoria-top.webp" alt="Pastel de zanahoria visto desde arriba" width="700" height="766">
+          <span class="dot-badge" aria-hidden="true"></span>
+        </div>
+      </div>
+      <a href="#menu" class="scroll-hint" aria-label="Bajar al menú"><span></span></a>
+    </section>
+
+    <!-- 2. Menú -->
+    <section id="menu" class="menu" data-section>
+      <div class="floats" aria-hidden="true">
+        <img class="float" data-speed="0.35" data-rot="12" style="--x:2%;--y:6%;--w:min(150px,24vw);--r0:-10deg" src="img/tartaleta-ind.webp" alt="">
+        <img class="float" data-speed="0.2" data-rot="-10" style="--x:86%;--y:2%;--w:min(190px,26vw);--r0:8deg" src="img/brownies-8.webp" alt="">
+        <img class="float hide-sm" data-speed="0.45" data-rot="8" style="--x:3%;--y:82%;--w:120px;--r0:6deg" src="img/muffin-chocolate.webp" alt="">
+        <span class="sprinkles" data-speed="0.4" style="--x:78%;--y:88%"></span>
+      </div>
+
+      <div class="wrap">
+        <header class="section-head reveal">
+          <h2 data-cms="menu.title">Productos estrella</h2>
+          <p data-cms="menu.subtitle">Los favoritos de todos por la combinación de sabores y textura.</p>
+        </header>
+
+        <div class="tabs reveal" role="tablist" aria-label="Categorías del menú">
+          <button role="tab" aria-selected="true" data-cat="pasteles">Pasteles</button>
+          <button role="tab" aria-selected="false" data-cat="pays">Pays</button>
+          <button role="tab" aria-selected="false" data-cat="postres">Postres</button>
+          <button role="tab" aria-selected="false" data-cat="helados">Helados</button>
+          <button role="tab" aria-selected="false" data-cat="bebidas">Bebidas</button>
+          <span class="tabs-ink" aria-hidden="true"></span>
+        </div>
+
+        <div class="swatches" id="dishes" role="region" aria-roledescription="carrusel" aria-label="Productos estrella"></div>
+        <div class="sw-controls">
+          <button class="sw-prev" type="button" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <div class="sw-dots" role="tablist" aria-label="Elegir par de productos"></div>
+          <button class="sw-next" type="button" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+        <p class="menu-note reveal">Desliza para ver más · toca un producto para verlo en grande.</p>
+      </div>
+    </section>
+
+    <!-- 3. Nosotros -->
+    <section id="nosotros" class="about" data-section>
+      <div class="floats" aria-hidden="true">
+        <img class="float" data-speed="0.3" data-rot="-14" style="--x:91%;--y:2%;--w:min(200px,30vw);--r0:-6deg" src="img/tartaleta-nuez.webp" alt="">
+        <img class="float" data-speed="0.5" data-rot="10" style="--x:2%;--y:86%;--w:min(130px,22vw);--r0:12deg" src="img/pay-zarzamora-ind.webp" alt="">
+        <span class="sprinkles" data-speed="0.35" style="--x:42%;--y:4%"></span>
+        <span class="sprinkles hide-sm" data-speed="0.55" style="--x:90%;--y:80%"></span>
+      </div>
+
+      <div class="wrap about-grid">
+        <div class="about-art">
+          <img data-spin="-0.05" src="img/cheesecake-cereza.webp" alt="Pastel de queso con cerezas visto desde arriba" width="900" height="860" loading="lazy">
+        </div>
+        <div class="about-copy reveal">
+          <h2 data-cms="about.title">¿Quién es Miky?</h2>
+          <p class="kicker" data-cms="about.kicker">Empresa orgullosamente mexicana, con productos de la más alta calidad.</p>
+          <p data-cms="about.p1">Pastelería Miky fue fundada en Colima en 1995 y es, al día de hoy, la pastelería preferida por las familias del estado. También estamos en Jalisco. Nuestra calidad y el gran sabor nos distinguen.</p>
+          <p data-cms="about.p2">Cada uno de nuestros productos se elabora cuidadosamente, manteniendo la más alta calidad que nos distingue.</p>
+          <ul class="facts">
+            <li><strong>1995</strong><span>fundada en Colima</span></li>
+            <li><strong>Al día</strong><span>recién hecho</span></li>
+            <li><strong>0</strong><span>conservadores</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Helados -->
+    <section id="helados" class="icecream" data-section>
+      <div class="floats" aria-hidden="true">
+        <span class="sprinkles" data-speed="0.45" style="--x:8%;--y:12%"></span>
+        <span class="sprinkles" data-speed="0.3" style="--x:55%;--y:90%"></span>
+      </div>
+      <div class="wrap ice-grid">
+        <div class="ice-copy reveal">
+          <h2 data-cms="ice.title">¿Ya probaste nuestros helados?</h2>
+          <p data-cms="ice.text">Helado realizado con los mejores ingredientes locales y recetas únicas que llevamos hasta ti.</p>
+
+          <div class="price-table">
+            <div class="pt-head"><span></span><span>Clásicos</span><span>Especiales*</span></div>
+            <div><span>1 litro</span><span>$150</span><span>$225</span></div>
+            <div><span>½ litro</span><span>$90</span><span>$135</span></div>
+            <div><span>Doble (200 g)</span><span>$48</span><span>$72</span></div>
+            <div><span>Sencillo (100 g)</span><span>$30</span><span>$45</span></div>
+          </div>
+          <p class="pt-note">*Especiales: coco, nuez, café y vainilla.</p>
+        </div>
+        <div class="ice-art">
+          <img class="ice-main" data-cms-img="ice.image" data-speed="-0.08" src="img/helados.webp" alt="Vaso de helado de fresa Miky" width="600" height="645" loading="lazy">
+          <img class="ice-side" data-speed="0.18" src="img/helado-copa.webp" alt="Copa de helado de fresa" width="360" height="450" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Sucursales -->
+    <section id="sucursales" class="stores" data-section>
+      <div class="wrap">
+        <header class="section-head reveal">
+          <h2 data-cms="stores.title">Encuentra tu Miky</h2>
+          <p data-cms="stores.subtitle">Nueve sucursales entre Colima y Jalisco.</p>
+        </header>
+
+        <div class="segmented reveal" role="tablist" aria-label="Estado">
+          <button role="tab" aria-selected="true" data-state="Colima">Colima</button>
+          <button role="tab" aria-selected="false" data-state="Jalisco">Jalisco</button>
+        </div>
+
+        <p class="strips-hint reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.6 16a1.6 1.6 0 0 1 2.4-2.1L9 15.5"/></svg>
+          <span data-cms="stores.hint">Presiona para ver cualquiera de nuestras sucursales</span>
+        </p>
+        <div class="strips reveal" id="strips">
+          <div class="strip-row" id="stripRow"></div>
+
+          <!-- vista de una sucursal: se revela con un círculo desde donde tocaste -->
+          <div class="store-view" id="storeView" hidden>
+            <div class="sv-map"><iframe id="storeMap" title="Mapa de la sucursal" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+            <button class="sv-close" type="button" aria-label="Volver a las sucursales">
+              <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </button>
+            <article class="sv-card" aria-live="polite">
+              <div class="sv-photo"></div>
+              <div class="sv-info">
+                <p class="sv-state"></p>
+                <h3 class="sv-name"></h3>
+                <address class="sv-addr"></address>
+                <div class="sv-actions"></div>
+              </div>
+              <div class="sv-nav">
+                <button class="sv-prev" type="button" aria-label="Sucursal anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+                <button class="sv-next" type="button" aria-label="Sucursal siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Lo que dicen de nosotros (órbita de opiniones) -->
+    <section id="opiniones" class="testi" data-section>
+      <div class="testi-blob" aria-hidden="true"></div>
+      <div class="wrap">
+        <header class="testi-head reveal">
+          <span class="testi-eyebrow" data-cms="reviews.eyebrow">Opiniones</span>
+          <h2>Lo que dicen <em>nuestros clientes</em></h2>
+        </header>
+
+        <div class="testi-grid">
+          <div class="testi-text">
+            <div class="testi-body" aria-live="polite">
+              <div class="testi-stars" aria-label="5 de 5 estrellas">★★★★★</div>
+              <blockquote class="testi-quote"></blockquote>
+              <p class="testi-name"></p>
+              <p class="testi-place"></p>
+            </div>
+            <div class="testi-count" aria-hidden="true"><span class="testi-cur">01</span><span class="testi-line"><span></span></span><span class="testi-tot">06</span></div>
+          </div>
+
+          <div class="testi-orbit">
+            <svg class="orbit-path" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="35.8"/></svg>
+            <div class="orbit-mask"><div class="orbit-ring" id="orbitRing"></div></div>
+            <div class="orbit-center"><img alt="" width="480" height="480"></div>
+            <figure class="orbit-dish">
+              <span class="orbit-dish-img"><img alt="" width="400" height="500"></span>
+              <figcaption><small>Pidió</small><span class="orbit-dish-name"></span></figcaption>
+            </figure>
+            <button class="orbit-prev" type="button" aria-label="Opinión anterior"><svg viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button>
+            <button class="orbit-next" type="button" aria-label="Opinión siguiente"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Cierre -->
+    <section id="contacto" class="closing" data-section>
+      <div class="floats" aria-hidden="true">
+        <img class="float" data-speed="0.4" data-rot="12" style="--x:4%;--y:8%;--w:min(120px,22vw);--r0:-14deg" src="img/muffin-zanahoria.webp" alt="">
+        <img class="float" data-speed="0.25" data-rot="-10" style="--x:86%;--y:2%;--w:min(150px,26vw);--r0:10deg" src="img/pay-coco-ind.webp" alt="">
+        <img class="float hide-sm" data-speed="0.55" data-rot="8" style="--x:12%;--y:74%;--w:110px;--r0:-4deg" src="img/pay-fresa-ind.webp" alt="">
+        <img class="float" data-speed="0.2" data-rot="-6" style="--x:80%;--y:66%;--w:min(160px,28vw);--r0:4deg" src="img/frappe.webp" alt="">
+        <span class="sprinkles" data-speed="0.6" style="--x:2%;--y:46%"></span>
+        <span class="sprinkles hide-sm" data-speed="0.35" style="--x:64%;--y:82%"></span>
+      </div>
+      <div class="wrap closing-box reveal">
+        <img src="img/logo.webp" alt="" class="closing-logo" width="480" height="265" loading="lazy">
+        <h2 data-cms="closing.title">Creando dulces momentos</h2>
+        <p data-cms="closing.text">Síguenos para conocer nuestras promociones y novedades.</p>
+        <div class="social">
+          <a class="btn btn-solid" href="https://www.facebook.com/pasteleriamiky" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg>Facebook
+          </a>
+          <a class="btn btn-outline" href="https://www.instagram.com/pasteleriamiky/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.5 5.8a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>Instagram
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <img src="img/logo-blanco.webp" alt="Miky" width="200" height="100" loading="lazy">
+        <p>Pastelería y alta repostería.<br>Creando dulces momentos desde 1995.</p>
+      </div>
+      <div>
+        <h3>Menú</h3>
+        <a href="#menu" data-goto="pasteles">Pasteles</a>
+        <a href="#menu" data-goto="pays">Pays</a>
+        <a href="#menu" data-goto="postres">Postres</a>
+        <a href="#helados">Helados</a>
+        <a href="#menu" data-goto="bebidas">Bebidas</a>
+      </div>
+      <div>
+        <h3>Información</h3>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#sucursales">Sucursales</a>
+        <a href="https://pasteleriasmiky.com/politica-privacidad/" target="_blank" rel="noopener">Aviso de privacidad</a>
+      </div>
+      <div>
+        <h3>Síguenos</h3>
+        <a href="https://www.facebook.com/pasteleriamiky" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://www.instagram.com/pasteleriamiky/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <p class="copy wrap">© <span id="year">2026</span> Pastelerías Miky. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Botón flotante de WhatsApp (el número se configura en js/main.js → WHATSAPP) -->
+  <a class="wa-float" href="https://wa.me/" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.53 1.74 6.5L3 29l6.68-1.75A12.95 12.95 0 0 0 16.04 29C23.2 29 29.03 23.18 29.03 16S23.2 3 16.04 3zm0 23.63c-1.98 0-3.92-.53-5.61-1.54l-.4-.24-3.96 1.04 1.06-3.86-.26-.4a10.6 10.6 0 0 1-1.64-5.63c0-5.86 4.77-10.63 10.64-10.63 5.86 0 10.62 4.77 10.62 10.63 0 5.86-4.77 10.63-10.45 10.63zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65 0 1.57 1.14 3.08 1.3 3.29.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.89-.77 2.15-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg>
+    <span class="wa-tip" role="tooltip">Escríbenos por WhatsApp</span>
+  </a>
+
+  <!-- Escritorio: botón para subir de sección en sección -->
+  <button class="sec-jump is-hidden" type="button" aria-label="Subir a la sección anterior">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+    <span class="sec-tip" role="tooltip">Presiona para subir de sección en sección</span>
+  </button>
+
+  <!-- Menú inferior (móvil) -->
+  <nav class="tabbar" aria-label="Navegación">
+    <div class="tabbar-bg" aria-hidden="true"></div>
+    <a href="#inicio" class="tab" data-tab="inicio" aria-label="Inicio">
+      <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>
+      <span class="tab-label">Inicio</span>
+    </a>
+    <a href="#menu" class="tab" data-tab="menu" aria-label="Menú">
+      <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M4 14h16l-1.5 6.2a1 1 0 0 1-1 .8h-11a1 1 0 0 1-1-.8zM5 14a7 7 0 0 1 14 0M12 3v4M9.5 4.5 12 7l2.5-2.5"/></svg></span>
+      <span class="tab-label">Menú</span>
+    </a>
+    <a href="#nosotros" class="tab" data-tab="nosotros" aria-label="Nosotros">
+      <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span>
+      <span class="tab-label">Nosotros</span>
+    </a>
+    <a href="#helados" class="tab" data-tab="helados" aria-label="Helados">
+      <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M7.5 10a4.5 4.5 0 0 1 9 0M6.5 10h11L12 21z"/></svg></span>
+      <span class="tab-label">Helados</span>
+    </a>
+    <a href="#sucursales" class="tab" data-tab="sucursales" aria-label="Sucursales">
+      <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+      <span class="tab-label">Sucursales</span>
+    </a>
+  </nav>
+
+  <script src="/js/product-modal.js?v=1" defer></script>
+  <script type="module" src="/js/main.js?v=1"></script>
+</body>
+</html>
