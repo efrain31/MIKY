@@ -1,0 +1,60 @@
+# Ruta del dominio del API de Miky en el ingress de MicroK8s de la .81.
+# El API corre en Docker (docker-compose.servidor.yml) escuchando en 172.17.0.1:3090;
+# este Service sin selector + EndpointSlice apunta ahí.
+#   microk8s kubectl apply -f despliegue/k8s-ingress.yml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: miky
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: miky-api
+  namespace: miky
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3090
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice           # el ingress lee EndpointSlices; MicroK8s no las genera a partir de Endpoints manuales
+metadata:
+  name: miky-api-docker
+  namespace: miky
+  labels:
+    kubernetes.io/service-name: miky-api
+addressType: IPv4
+ports:
+  - name: http
+    port: 3090
+    protocol: TCP
+endpoints:
+  - addresses:
+      - 172.17.0.1
+    conditions:
+      ready: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: miky-api
+  namespace: miky
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "7m"          # imágenes que suben admin/supervisor
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"     # alertas en vivo del panel (SSE)
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+spec:
+  ingressClassName: public
+  rules:
+    - host: api-miky.cityflow.mx
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: miky-api
+                port:
+                  number: 80

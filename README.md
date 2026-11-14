@@ -79,6 +79,18 @@ guardan los cambios; *Panel → Contenido → Restaurar original* los deshace.
   `docker compose down -v && docker compose up -d` (**borra todos los datos**).
 - Respaldo de la BD: `docker compose exec bdMY pg_dump -U miky miky > respaldo.sql`
 
+## Despliegue (producción)
+
+- **Front → Vercel** (repo de GitHub conectado). `vercel.json` publica sólo `front/` como sitio estático y
+  reenvía `/api/*` y `/uploads/*` a `https://api-miky.cityflow.mx`; así las sesiones quedan en el dominio de Vercel.
+  En Vercel: *Root Directory* vacío (`./`) y *Framework* «Other».
+- **backMy + bdMY → servidor dev-cityflow (45.232.252.81)**, con docker, en `~/miky` del usuario `city`:
+  `bash despliegue/subir-al-servidor.sh` (desde la Mac) construye para amd64, sube las imágenes por SSH y
+  levanta todo con `despliegue/levantar-servidor.sh`. La base y las imágenes subidas viven en los volúmenes
+  `miky_dbdata` y `miky_uploads` (no se borran al redesplegar). Las contraseñas están en `~/miky/.env` del servidor.
+- **Entrada**: Cloudflare (`api-miky.cityflow.mx`, con proxy) → ingress de MicroK8s (`despliegue/k8s-ingress.yml`)
+  → API en `172.17.0.1:3090` (interfaz interna de Docker; no expuesto a internet).
+
 ## Antes de publicar
 
 - Servir con HTTPS y poner `COOKIE_SECURE=true`.
