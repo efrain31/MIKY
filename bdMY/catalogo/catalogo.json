@@ -1,5 +1,5 @@
 {
-  "_nota": "Catálogo real tomado de pasteleriasmiky.com (nov-2026). Precios en pesos. Edita aquí y corre: python3 db/catalogo/generar_seed.py",
+  "_nota": "Catálogo real tomado de pasteleriasmiky.com (nov-2026). Precios en pesos. Edita aquí y corre: python3 bdMY/catalogo/generar_seed.py",
   "categorias": [
     { "slug": "pasteles", "name": "Pasteles" },
     { "slug": "pays", "name": "Pays" },

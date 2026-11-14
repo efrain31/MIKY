@@ -1,9 +1,9 @@
-# Pastelerías Miky — front + back + base de datos
+# Pastelerías Miky — front + backMy (API) + bdMY (base de datos)
 #   docker compose up -d --build     →  http://localhost:8090  (sitio)  y  http://localhost:8090/admin/  (panel)
 name: miky
 
 services:
-  db:
+  bdMY:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -13,21 +13,22 @@ services:
       TZ: America/Mexico_City
     volumes:
       - dbdata:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d:ro   # esquema + catálogo (sólo la primera vez)
+      - ./bdMY/init:/docker-entrypoint-initdb.d:ro   # esquema + catálogo (sólo la primera vez)
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 20
 
-  back:
-    build: ./back
+  backMy:
+    build: ./backMy
+    image: miky-backmy   # Docker exige minúsculas en el nombre de la imagen
     restart: unless-stopped
     depends_on:
-      db:
+      bdMY:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-miky}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-miky}
+      DATABASE_URL: postgres://${POSTGRES_USER:-miky}:${POSTGRES_PASSWORD}@bdMY:5432/${POSTGRES_DB:-miky}
       ADMIN_EMAIL: ${ADMIN_EMAIL:?Define ADMIN_EMAIL en .env}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD en .env}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}       # true cuando se sirva con HTTPS
@@ -35,13 +36,13 @@ services:
       TZ: America/Mexico_City
     volumes:
       - uploads:/data/uploads
-      - ./db/migraciones:/app/migrations:ro   # cambios de esquema que se aplican sin borrar datos
+      - ./bdMY/migraciones:/app/migrations:ro   # cambios de esquema que se aplican sin borrar datos
 
   front:
     image: nginx:1.27-alpine
     restart: unless-stopped
     depends_on:
-      - back
+      - backMy
     ports:
       - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-8090}:80"   # WEB_BIND=0.0.0.0 para abrirlo a la red
     volumes:

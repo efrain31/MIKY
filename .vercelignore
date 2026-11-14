@@ -1,0 +1,9 @@
+# Vercel sólo publica el front (carpeta front/) como sitio estático.
+# El API (backMy) y la base de datos (bdMY) corren en el servidor, no en Vercel.
+backMy/
+bdMY/
+respaldos/
+docker-compose.yml
+.env
+.env.*
+front/nginx.conf

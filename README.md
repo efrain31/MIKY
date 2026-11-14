@@ -12,9 +12,9 @@ miky/
 │   ├── admin/             Panel de operación: pedidos en vivo, inventario, contenido y usuarios
 │   ├── img/               Fotos reales de pasteleriasmiky.com optimizadas a WEBP
 │   └── nginx.conf         Sirve el front y pasa /api al back
-├── back/                  API en Node.js 22 + Express 5 + PostgreSQL
+├── backMy/                 API en Node.js 22 + Express 5 + PostgreSQL
 │   └── src/               server.js · auth.js · orders.js · routes/ (public, account, staff, admin)
-├── db/
+├── bdMY/
 │   ├── init/              01_esquema.sql · 02_catalogo.sql · 03_inventario_demo.sql (se cargan la 1ª vez)
 │   └── catalogo/          catalogo.json (41 productos reales, 91 presentaciones, 9 sucursales) + generar_seed.py
 ├── docker-compose.yml
@@ -69,15 +69,15 @@ guardan los cambios; *Panel → Contenido → Restaurar original* los deshace.
 
 ## Datos
 
-- `db/catalogo/catalogo.json` es la fuente del catálogo real (nombres, descripciones, precios, fotos, sucursales).
-  Si lo editas: `python3 db/catalogo/generar_seed.py` regenera `db/init/02_catalogo.sql`.
-- **`db/init/03_inventario_demo.sql` son existencias de demostración, no reales.** Antes de producción
+- `bdMY/catalogo/catalogo.json` es la fuente del catálogo real (nombres, descripciones, precios, fotos, sucursales).
+  Si lo editas: `python3 bdMY/catalogo/generar_seed.py` regenera `bdMY/init/02_catalogo.sql`.
+- **`bdMY/init/03_inventario_demo.sql` son existencias de demostración, no reales.** Antes de producción
   bórralo (o vacía la tabla `inventory`) y captura las existencias reales desde el panel.
-- Cambios de esquema nuevos van en `db/migraciones/NNN_nombre.sql`: el back los aplica solo al arrancar,
+- Cambios de esquema nuevos van en `bdMY/migraciones/NNN_nombre.sql`: el back los aplica solo al arrancar,
   sin borrar datos (lleva el control en la tabla `schema_migrations`).
-- Los SQL de `db/init` sólo corren cuando el volumen de la BD está vacío. Para empezar de cero:
+- Los SQL de `bdMY/init` sólo corren cuando el volumen de la BD está vacío. Para empezar de cero:
   `docker compose down -v && docker compose up -d` (**borra todos los datos**).
-- Respaldo de la BD: `docker compose exec db pg_dump -U miky miky > respaldo.sql`
+- Respaldo de la BD: `docker compose exec bdMY pg_dump -U miky miky > respaldo.sql`
 
 ## Antes de publicar
 

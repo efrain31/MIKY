@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera los SQL de carga inicial a partir de catalogo.json.
 
-Uso:  python3 db/catalogo/generar_seed.py
+Uso:  python3 bdMY/catalogo/generar_seed.py
 Salida:
   db/init/02_catalogo.sql          categorías, sucursales, productos y presentaciones (datos reales)
   db/init/03_inventario_demo.sql   existencias DE DEMOSTRACIÓN por sucursal (bórralo antes de producción)
