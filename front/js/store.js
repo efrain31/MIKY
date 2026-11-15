@@ -35,6 +35,8 @@ export async function initStore(data) {
     onAdd: (p, size, qty) => addToCart(size.id, qty, p.name, size.label),
     isFavorite: (p) => favorites.has(p.pid),
     onToggleFavorite: (p) => toggleFavorite(p.pid),
+    loadSummary,
+    onRate: (p, stars) => rate(p.pid, stars),
   });
 
   try { session.set(await api.me()); } catch { session.set(null); }
@@ -455,5 +457,36 @@ async function toggleFavorite(productId) {
   } catch (err) {
     toast(err.message, 'error');
     return !on;
+  }
+}
+
+/* =================== existencias y calificaciones (ventana de producto) =================== */
+async function loadSummary(p) {
+  const { stock, rating } = await api.productSummary(p.pid);
+  const last = branches.find((b) => String(b.id) === String(ls.get(LAST_BRANCH, '')));
+  const out = {};
+  for (const s of p.sizes) {
+    const st = stock[s.id];
+    out[s.id] = {
+      total: st?.total || 0,
+      branches: st ? Object.keys(st.byBranch).length : 0,
+      // la sucursal donde recogió la última vez
+      here: last ? { name: last.name, qty: st?.byBranch[last.id] || 0 } : null,
+    };
+  }
+  return { stock: out, rating };
+}
+
+async function rate(productId, stars) {
+  if (!session.user) {
+    afterLogin = () => { closeDrawer(); toast('Ya puedes calificar ★'); };
+    openDrawer('login', 'Inicia sesión para calificar nuestros productos.');
+    return undefined;
+  }
+  try {
+    return await api.rate(productId, stars);
+  } catch (err) {
+    toast(err.message, 'error');
+    return undefined;
   }
 }

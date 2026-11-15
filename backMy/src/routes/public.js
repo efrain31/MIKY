@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { query } from '../db.js';
 import { productDto, branchDto } from '../format.js';
-import { notFound } from '../errors.js';
+import { notFound, int } from '../errors.js';
+import { ratingSummary } from '../ratings.js';
 
 const r = Router();
 
@@ -35,6 +36,28 @@ r.get('/branches/:id/stock', async (req, res) => {
   const { rows } = await query('SELECT variant_id, quantity FROM inventory WHERE branch_id = $1', [b.id]);
   res.set('Cache-Control', 'no-store');
   res.json(Object.fromEntries(rows.map((x) => [x.variant_id, x.quantity])));
+});
+
+/** Para la ventana de producto: existencias por presentación (total y por sucursal) y calificación.
+ *  { stock: { variantId: { total, byBranch: { branchId: cantidad } } }, rating: { avg, count, mine } } */
+r.get('/products/:id/summary', async (req, res) => {
+  const id = int(req.params.id, { name: 'producto', min: 1 });
+  const { rowCount } = await query('SELECT 1 FROM products WHERE id = $1 AND active', [id]);
+  if (!rowCount) throw notFound('Producto no encontrado.');
+  const [{ rows }, rating] = await Promise.all([
+    query(`SELECT i.variant_id, i.branch_id, i.quantity
+             FROM inventory i JOIN product_variants v ON v.id = i.variant_id JOIN branches b ON b.id = i.branch_id
+            WHERE v.product_id = $1 AND v.active AND b.active AND i.quantity > 0`, [id]),
+    ratingSummary(id, req.user?.id),
+  ]);
+  const stock = {};
+  for (const x of rows) {
+    const s = (stock[x.variant_id] ??= { total: 0, byBranch: {} });
+    s.total += x.quantity;
+    s.byBranch[x.branch_id] = x.quantity;
+  }
+  res.set('Cache-Control', 'no-store');
+  res.json({ stock, rating });
 });
 
 /** Textos e imágenes del sitio que el admin/supervisor cambió. */

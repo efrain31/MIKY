@@ -36,6 +36,7 @@ export const api = {
   catalog: () => get('/catalog'),
   branches: () => get('/branches'),
   stock: (branchId) => get(`/branches/${branchId}/stock`),
+  productSummary: (productId) => get(`/products/${productId}/summary`),
   content: () => get('/content'),
 
   // Cuenta
@@ -49,6 +50,7 @@ export const api = {
   favorites: () => get('/me/favorites'),
   addFavorite: (productId) => put(`/me/favorites/${productId}`),
   removeFavorite: (productId) => del(`/me/favorites/${productId}`),
+  rate: (productId, stars) => put(`/me/ratings/${productId}`, { stars }),
 
   cart: () => get('/me/cart'),
   setCartItem: (variantId, quantity) => put(`/me/cart/${variantId}`, { quantity }),

@@ -9,12 +9,16 @@
      3. Cualquier elemento con data-product="<id>" abre la ventana al hacer clic.
         También se puede abrir desde código: ProductModal.open('red-velvet').
      4. Opcional — acciones de la tienda:
-          ProductModal.configure({ onAdd(product, size, qty), isFavorite(product), onToggleFavorite(product) })
+          ProductModal.configure({ onAdd(product, size, qty), isFavorite(product), onToggleFavorite(product),
+                                   loadSummary(product), onRate(product, stars) })
+        loadSummary → { stock: { sizeId: { total, branches, here: { name, qty } | null } }, rating: { avg, count, mine } }
+        onRate      → la nueva calificación (o undefined si hubo que iniciar sesión)
 
    Incluye: navegación anterior/siguiente dentro de la misma categoría,
    presentaciones con precio y foto propia, enlace directo (#producto/<id>),
    botón "atrás" del celular para cerrar, deslizar para cerrar en móvil,
-   teclado (Esc, ←, →) y transición de la foto desde la tarjeta.
+   teclado (Esc, ←, →), transición de la foto desde la tarjeta, existencias de la presentación
+  elegida y calificación de 1 a 5 estrellas.
    ========================================================== */
 
 window.ProductModal = (() => {
@@ -31,6 +35,7 @@ window.ProductModal = (() => {
   let sizeIdx = 0;
   let qty = 1;
   let pushedHistory = false;
+  let summary = null;     // existencias y calificación del producto abierto (llegan aparte)
 
   /* ---------- marcado (se crea una sola vez) ---------- */
   function build() {
@@ -64,6 +69,18 @@ window.ProductModal = (() => {
           <div class="pm-sizes-wrap">
             <h3 class="pm-label">Presentaciones</h3>
             <div class="pm-sizes" role="radiogroup" aria-label="Presentación"></div>
+          </div>
+
+          <div class="pm-extra">
+            <p class="pm-stock" aria-live="polite"></p>
+            <div class="pm-rating">
+              <div class="pm-stars" role="radiogroup" aria-label="Califica este producto">
+                ${[1, 2, 3, 4, 5].map((n) => `<button type="button" role="radio" aria-checked="false" data-star="${n}" aria-label="${n} de 5"><i><b></b></i></button>`).join('')}
+              </div>
+              <span class="pm-rating-num"></span>
+              <span class="pm-rating-count"></span>
+              <small class="pm-rating-hint"></small>
+            </div>
           </div>
 
           <p class="pm-note">Precios en sucursal, sujetos a cambio sin previo aviso.</p>
@@ -107,6 +124,12 @@ window.ProductModal = (() => {
       serves: dlg.querySelector('.pm-serves'),
       nav: dlg.querySelector('.pm-nav'),
       count: dlg.querySelector('.pm-count'),
+      extra: dlg.querySelector('.pm-extra'),
+      stock: dlg.querySelector('.pm-stock'),
+      stars: dlg.querySelector('.pm-stars'),
+      ratingNum: dlg.querySelector('.pm-rating-num'),
+      ratingCount: dlg.querySelector('.pm-rating-count'),
+      ratingHint: dlg.querySelector('.pm-rating-hint'),
     };
 
     dlg.querySelector('.pm-close').addEventListener('click', () => close());
@@ -132,6 +155,17 @@ window.ProductModal = (() => {
       if (!hooks.onToggleFavorite) return;
       const on = await hooks.onToggleFavorite(current);
       if (typeof on === 'boolean') paintFav(on);
+    });
+
+    // estrellas: al pasar el dedo/ratón se previsualiza; al tocar se califica
+    ui.stars.addEventListener('pointerover', (e) => { const b = e.target.closest('[data-star]'); if (b) paintStars(+b.dataset.star); });
+    ui.stars.addEventListener('pointerleave', () => paintStars());
+    ui.stars.addEventListener('click', async (e) => {
+      const b = e.target.closest('[data-star]');
+      if (!b || !hooks.onRate) return;
+      const p = current;
+      const rating = await hooks.onRate(p, +b.dataset.star);
+      if (rating && p === current && summary) { summary.rating = rating; paintRating(true); }
     });
 
     // clic en el fondo oscuro cierra
@@ -161,6 +195,7 @@ window.ProductModal = (() => {
   /* ---------- pintar un producto ---------- */
   function render(p, dir = 0) {
     current = p;
+    summary = null;
     ui.cat.textContent = p.cat;
     ui.title.textContent = p.name;
     ui.desc.textContent = p.full || p.desc;
@@ -179,10 +214,66 @@ window.ProductModal = (() => {
     ui.count.textContent = `${i + 1} / ${group.length}`;
 
     ui.setQty(1);
+    paintActions();
+    loadSummary(p);
+  }
+
+  // Botones que dependen de la tienda (con un enlace directo la ventana abre antes de configure())
+  function paintActions() {
     dlg.querySelector('.pm-add').hidden = !hooks.onAdd;
     dlg.querySelector('.pm-qty').hidden = !hooks.onAdd;
     dlg.querySelector('.pm-fav').hidden = !hooks.onToggleFavorite;
-    paintFav(Boolean(hooks.isFavorite?.(p)));
+    paintFav(Boolean(hooks.isFavorite?.(current)));
+  }
+
+  /* ---------- existencias y calificación ---------- */
+  async function loadSummary(p) {
+    ui.extra.hidden = !hooks.loadSummary;
+    if (!hooks.loadSummary) return;
+    summary = null;
+    paintStock(); paintRating();
+    try {
+      const s = await hooks.loadSummary(p);
+      if (p !== current) return;          // ya se cambió de producto
+      summary = s;
+    } catch { if (p !== current) return; summary = { failed: true }; }
+    paintStock(); paintRating();
+  }
+
+  function paintStock() {
+    const el = ui.stock;
+    el.className = 'pm-stock';
+    if (!summary) { el.textContent = 'Consultando existencias…'; el.classList.add('loading'); return; }
+    if (summary.failed) { el.textContent = 'No pudimos consultar las existencias.'; return; }
+    const st = summary.stock[current.sizes[sizeIdx].id];
+    if (!st || !st.total) { el.innerHTML = '<span><strong>Agotado por ahora</strong> · pregunta en tu sucursal</span>'; el.classList.add('out'); return; }
+    const where = st.branches === 1 ? '1 sucursal' : `${st.branches} sucursales`;
+    el.innerHTML = `<span><strong>${st.total} disponible${st.total === 1 ? '' : 's'}</strong> en ${where}`
+      + (st.here ? ` · ${st.here.qty ? `${st.here.qty} en ${esc(st.here.name)}` : `ninguno en ${esc(st.here.name)}`}` : '') + '</span>';
+    el.classList.add(st.total <= 3 ? 'low' : 'ok');
+  }
+
+  // Sin `preview` las estrellas muestran el promedio (con fracción); con `preview` se llenan hasta esa
+  function paintStars(preview = 0) {
+    const r = summary?.rating;
+    const value = preview || r?.avg || 0;
+    [...ui.stars.children].forEach((b, i) => {
+      b.style.setProperty('--fill', Math.max(0, Math.min(1, value - i)));
+      b.setAttribute('aria-checked', String(r?.mine === i + 1));
+    });
+    ui.stars.classList.toggle('preview', Boolean(preview));
+  }
+
+  function paintRating(justRated = false) {
+    const r = summary?.rating;
+    ui.stars.parentElement.classList.toggle('loading', !r);
+    paintStars();
+    ui.ratingNum.textContent = r?.count ? r.avg.toFixed(1) : '';
+    ui.ratingCount.textContent = r ? (r.count ? `(${r.count} calificaci${r.count === 1 ? 'ón' : 'ones'})` : 'Sin calificaciones aún') : '';
+    ui.ratingHint.textContent = !r ? ''
+      : r.mine ? `${justRated ? '¡Gracias! ' : ''}Tu calificación: ${r.mine} de 5 · toca otra estrella para cambiarla`
+        : '¿Ya lo probaste? Toca las estrellas para calificarlo';
+    if (justRated) { ui.stars.classList.remove('pop'); void ui.stars.offsetWidth; ui.stars.classList.add('pop'); }
   }
 
   function selectSize(i, focus = false, dir = 0) {
@@ -195,6 +286,7 @@ window.ProductModal = (() => {
     });
     ui.price.textContent = money(s.price);
     ui.serves.textContent = [current.sizes.length > 1 ? s.label : '', s.serves].filter(Boolean).join(' · ');
+    if (hooks.loadSummary) paintStock();
     swapImage(s.img || current.img, dir);
   }
 
@@ -368,8 +460,12 @@ window.ProductModal = (() => {
   /** Conecta las acciones de la tienda (carrito y favoritos). */
   function configure(h) { hooks = { ...hooks, ...h }; }
 
-  /** Vuelve a pintar el corazón (p. ej. al iniciar o cerrar sesión). */
-  function refresh() { if (dlg?.open && current) paintFav(Boolean(hooks.isFavorite?.(current))); }
+  /** Vuelve a pintar el corazón y la calificación propia (p. ej. al iniciar o cerrar sesión). */
+  function refresh() {
+    if (!dlg?.open || !current) return;
+    paintActions();
+    loadSummary(current);
+  }
 
   return { register, configure, refresh, open, close, get: (id) => products.get(id) };
 })();

@@ -7,6 +7,7 @@ import {
 import { badRequest, unauthorized, conflict, notFound, str, int, EMAIL_RE } from '../errors.js';
 import { createOrderFromCart, changeStatus, loadOrder } from '../orders.js';
 import { imgUrl, pesos } from '../format.js';
+import { ratingSummary } from '../ratings.js';
 
 const r = Router();
 
@@ -106,6 +107,19 @@ r.put('/me/favorites/:productId', requireUser, async (req, res) => {
 r.delete('/me/favorites/:productId', requireUser, async (req, res) => {
   await query('DELETE FROM favorites WHERE user_id = $1 AND product_id = $2', [req.user.id, Number(req.params.productId) || 0]);
   res.json({ ok: true });
+});
+
+/* ---------- Calificaciones (1 a 5 estrellas; volver a calificar la reemplaza) ---------- */
+r.put('/me/ratings/:productId', requireUser, async (req, res) => {
+  const pid = int(req.params.productId, { name: 'producto', min: 1 });
+  const stars = int(req.body.stars, { name: 'la calificación', min: 1, max: 5 });
+  const ok = await query('SELECT 1 FROM products WHERE id = $1 AND active', [pid]);
+  if (!ok.rowCount) throw notFound('Producto no encontrado.');
+  await query(
+    `INSERT INTO product_ratings (product_id, user_id, stars) VALUES ($1, $2, $3)
+     ON CONFLICT (product_id, user_id) DO UPDATE SET stars = EXCLUDED.stars, updated_at = now()`,
+    [pid, req.user.id, stars]);
+  res.json(await ratingSummary(pid, req.user.id));
 });
 
 /* ---------- Carrito (guardado en la cuenta) ---------- */
