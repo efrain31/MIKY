@@ -133,8 +133,8 @@ section > .wrap { position: relative; z-index: 1; }
 .dot-badge { position: absolute; top: 6%; right: 18%; width: 46px; height: 46px; border-radius: 50%; background: #fff; box-shadow: 0 10px 24px rgba(64, 50, 47, .12); }
 
 /* Armado de la tartaleta al abrir (js/hero-intro.js). Mientras no termina, la foto real, el pastel de
-   zanahoria y el punto quedan ocultos; si el JS falla, aparecen solos a los 7 s. */
-.js .hero-art:not(.built) :is(.hero-main, .hero-side, .dot-badge) { opacity: 0; animation: hero-failsafe 0s 7s forwards; }
+   zanahoria y el punto quedan ocultos; si el JS falla, aparecen solos a los 9 s (2 s de splash + la animación). */
+.js .hero-art:not(.built) :is(.hero-main, .hero-side, .dot-badge) { opacity: 0; animation: hero-failsafe 0s 9s forwards; }
 .hero-art.built .hero-side, .hero-art.built .dot-badge { animation: hero-pop .6s cubic-bezier(.2, .9, .25, 1.15) both; }
 .hero-art.built .dot-badge { animation-delay: .15s; }
 @keyframes hero-failsafe { to { opacity: 1; } }

@@ -272,5 +272,6 @@ if (art && main) {
   const isDefault = main.getAttribute('src') === SRC;
   if (!isDefault || !('animate' in Element.prototype)) done();
   else if (reduce) { done(); labels().all(); }
-  else build().catch(done);
+  // espera a que se vaya el splash de index.html
+  else (window.mikySplash || Promise.resolve()).then(build).catch(done);
 }

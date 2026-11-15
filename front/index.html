@@ -15,12 +15,38 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="img/hero-tartaleta.webp">
-  <link rel="stylesheet" href="/css/styles.css?v=20261114123912">
+  <link rel="stylesheet" href="/css/styles.css?v=20261115-splash">
   <link rel="stylesheet" href="/css/store.css?v=1">
   <link rel="stylesheet" href="/css/product-modal.css?v=20261115-estrellas">
   <script>document.documentElement.classList.add('js')</script>
+  <!-- Splash: el logo 2 s al entrar, antes que nada (estilo en línea para que salga desde el primer cuadro) -->
+  <link rel="preload" as="image" href="img/splash.jpg">
+  <style>
+    #splash { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; background: #29160f; transition: opacity .45s ease, visibility .45s; }
+    #splash img { width: min(72vw, 72svh, 420px); height: auto; animation: splash-in .7s cubic-bezier(.2, .8, .2, 1) both; }
+    #splash.out { opacity: 0; visibility: hidden; }
+    html.splashing { overflow: hidden; }
+    @keyframes splash-in { from { opacity: 0; transform: scale(.92); } }
+    @media (prefers-reduced-motion: reduce) { #splash img { animation: none; } }
+  </style>
 </head>
 <body>
+  <div id="splash" aria-hidden="true"><img src="img/splash.jpg" alt="" width="554" height="554"></div>
+  <script>
+    // window.mikySplash se cumple al quitarse el splash (la portada espera a eso para armar la tartaleta)
+    (function () {
+      var el = document.getElementById('splash'), root = document.documentElement;
+      root.classList.add('splashing');
+      window.mikySplash = new Promise(function (done) {
+        setTimeout(function () {
+          el.classList.add('out');
+          root.classList.remove('splashing');
+          setTimeout(function () { el.remove(); }, 500);
+          done();
+        }, 2000);
+      });
+    })();
+  </script>
 
   <!-- Encabezado (escritorio) -->
   <header class="topbar">
@@ -340,7 +366,7 @@
   </nav>
 
   <script src="/js/product-modal.js?v=2" defer></script>
-  <script type="module" src="/js/hero-intro.js?v=1"></script>
+  <script type="module" src="/js/hero-intro.js?v=2"></script>
   <script type="module" src="/js/main.js?v=1"></script>
 </body>
 </html>
