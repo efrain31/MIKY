@@ -2,13 +2,29 @@
    Las rebanadas de durazno llegan desde fuera y se unen; luego caen el centro (piña y kiwi),
    la uva y al final la cereza. Todas las piezas son recortes de la misma foto, así que al
    terminar se cambian por la imagen real sin que se note.
+   Conforme llega cada ingrediente aparece su recuadro con una línea hasta donde está en la
+   tartaleta; los recuadros se ocultan al bajar (la foto gira con el scroll).
    Las coordenadas son de img/hero-tartaleta.webp (1000×929). Si el equipo cambia la imagen
-   desde el panel, o se pide menos movimiento, se muestra la foto sin animación. */
+   desde el panel no hay animación ni recuadros; con menos movimiento salen los recuadros fijos. */
 const SRC = 'img/hero-tartaleta.webp';
 const W = 1000, H = 929;
 const C = { x: 500, y: 465 };            // centro del plato
 const SLICES = 14;                        // rebanadas, una por cada gajo de durazno
 const R_IN = 205, R_OUT = 700;            // anillo de duraznos (R_OUT cubre las esquinas)
+const SLOW = 1.6;                         // escala de todos los tiempos de la animación
+
+/* Ingredientes (de la descripción del catálogo): `at` es el punto en la foto, `crop` el recorte
+   para la miniatura [imagen, ancho, alto, centro x, centro y, radio], `t` cuándo aparece (ms sin
+   escalar), `x` / `m` la esquina del recuadro en % de la portada, en computadora y en celular, y
+   `side: true` hace que la línea salga del costado del recuadro (para no cruzar el texto). */
+const LABELS = [
+  { name: 'Costra de almendra', at: [128, 548], crop: ['img/tartaleta.webp', 400, 500, 122, 302, 36], t: 700, x: [-21, -14], m: [-6, 20], side: true },
+  { name: 'Durazno', at: [800, 350], crop: [SRC, W, H, 800, 350, 95], t: 1300, x: [103, 12], m: [84, 17] },
+  { name: 'Piña', at: [470, 312], crop: [SRC, W, H, 470, 312, 45], t: 1700, x: [22, -22], m: [16, -14] },
+  { name: 'Kiwi', at: [640, 450], crop: [SRC, W, H, 390, 420, 55], t: 1850, x: [103, 52], m: [84, 42] },
+  { name: 'Uva', at: [547, 395], crop: [SRC, W, H, 547, 395, 62], t: 2250, x: [58, -22], m: [60, -14] },
+  { name: 'Cereza', at: [493, 482], crop: [SRC, W, H, 493, 500, 62], t: 2700, x: [86, 90], m: [84, 67], side: true },
+];
 
 const art = document.querySelector('.hero-art');
 const main = art?.querySelector('.hero-main');
@@ -69,6 +85,103 @@ function filler(pts) {
 
 function done() { art.classList.add('built'); }
 
+/* ---------- Recuadros de ingredientes ---------- */
+const SVG = 'http://www.w3.org/2000/svg';
+
+function labels() {
+  const wrap = document.createElement('div');
+  wrap.className = 'ingredients';
+  wrap.setAttribute('aria-label', 'Ingredientes de la tartaleta');
+  const svg = document.createElementNS(SVG, 'svg');
+  svg.setAttribute('aria-hidden', 'true');
+  wrap.append(svg);
+
+  const items = LABELS.map((l, i) => {
+    const [src, w, h, cx, cy, r] = l.crop;
+    const box = document.createElement('figure');
+    box.className = 'ingredient';
+    box.style.cssText = `--x:${l.x[0]}%;--y:${l.x[1]}%;--mx:${l.m[0]}%;--my:${l.m[1]}%`;
+    const thumb = document.createElement('span');
+    thumb.className = 'ingredient-img';
+    Object.assign(thumb.style, {
+      backgroundImage: `url(${src})`,
+      backgroundSize: `${(w / (2 * r) * 100).toFixed(1)}% auto`,
+      backgroundPosition: `${((cx - r) / (w - 2 * r) * 100).toFixed(1)}% ${((cy - r) / (h - 2 * r) * 100).toFixed(1)}%`,
+    });
+    const cap = document.createElement('figcaption');
+    cap.innerHTML = `<span>${String(i + 1).padStart(2, '0')}</span><span>${l.name}</span>`;
+    box.append(thumb, cap);
+    const path = document.createElementNS(SVG, 'path');
+    const mark = document.createElementNS(SVG, 'rect');
+    svg.append(path, mark);
+    wrap.append(box);
+    return { ...l, box, path, mark, shown: false };
+  });
+  art.append(wrap);
+
+  // Codo como en un plano: del centro del recuadro baja (o sube) hasta la altura del punto y
+  // luego va de lado; si el punto queda a la altura del recuadro (o `side`), sale del costado.
+  function place(it) {
+    const s = main.offsetWidth / W < main.offsetHeight / H ? main.offsetWidth / W : main.offsetHeight / H;
+    const px = main.offsetLeft + (main.offsetWidth - W * s) / 2 + it.at[0] * s;
+    const py = main.offsetTop + (main.offsetHeight - H * s) / 2 + it.at[1] * s;
+    const b = { l: it.box.offsetLeft, t: it.box.offsetTop, w: it.box.offsetWidth, h: it.box.offsetHeight };
+    let d;
+    if (!it.side && (py > b.t + b.h || py < b.t)) {
+      const bx = b.l + b.w / 2, by = py > b.t ? b.t + b.h : b.t;
+      d = `M${bx},${by}V${py}H${px}`;
+    } else {
+      const bx = px < b.l ? b.l : b.l + b.w, by = b.t + b.h / 2;
+      d = `M${bx},${by}H${px}V${py}`;
+    }
+    it.path.setAttribute('d', d);
+    const m = 8;
+    Object.entries({ x: px - m / 2, y: py - m / 2, width: m, height: m }).forEach(([k, v]) => it.mark.setAttribute(k, v));
+  }
+  const layout = () => items.forEach(place);
+  addEventListener('resize', layout);
+
+  function show(it, animate = true) {
+    place(it);
+    it.shown = true;
+    it.box.classList.add('in');
+    it.path.classList.add('in');
+    it.mark.classList.add('in');
+    if (!animate) return;
+    const len = it.path.getTotalLength();
+    it.path.style.strokeDasharray = len;
+    // la línea nace en el ingrediente y llega al recuadro
+    it.path.animate([{ strokeDashoffset: -len }, { strokeDashoffset: 0 }],
+      { duration: 500 * SLOW, easing: 'ease-out', fill: 'backwards' });
+    it.mark.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'none' }],
+      { duration: 250 * SLOW, easing: 'ease-out', fill: 'backwards' });
+    it.box.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 400 * SLOW, delay: 300 * SLOW, easing: 'ease-out', fill: 'backwards' });
+  }
+
+  // La foto gira al bajar: los recuadros sólo se ven arriba
+  const onScroll = () => art.classList.toggle('labels-off', scrollY > 30);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  art.classList.add('labeled');
+  // Si el panel cambia la foto, los puntos ya no cuadran
+  const watch = new MutationObserver(() => api.remove());
+  watch.observe(main, { attributes: true, attributeFilter: ['src'] });
+
+  const api = {
+    items,
+    timers: [],
+    play() { this.timers = items.map((it) => setTimeout(() => show(it), it.t * SLOW)); },
+    all() { items.forEach((it) => !it.shown && show(it, false)); },
+    remove() {
+      this.timers.forEach(clearTimeout); watch.disconnect(); wrap.remove();
+      art.classList.remove('labeled', 'labels-off');
+      removeEventListener('resize', layout); removeEventListener('scroll', onScroll);
+    },
+  };
+  return api;
+}
+
 async function build() {
   const stage = document.createElement('div');
   stage.className = 'build-stage';
@@ -91,6 +204,8 @@ async function build() {
   await slices[0].decode();
   art.append(stage);
   art.classList.add('building');
+  const tags = labels();
+  tags.play();
 
   // Si el panel cambia la foto a media animación, se corta y queda la nueva
   const watch = new MutationObserver(() => finish(true));
@@ -105,27 +220,27 @@ async function build() {
       { transform: `translate(${(Math.cos(a) * d).toFixed(1)}%, ${(Math.sin(a) * d).toFixed(1)}%) rotate(${turn}deg) scale(.7)`, opacity: 0 },
       { opacity: 1, offset: 0.35 },
       { transform: 'none', opacity: 1 },
-    ], { duration: 950, delay: 120 + i * 55, easing: ease, fill: 'backwards' });
+    ], { duration: 950 * SLOW, delay: (120 + i * 55) * SLOW, easing: ease, fill: 'backwards' });
   });
   anims.push(
     center.animate([
       { transform: 'scale(1.7) rotate(-90deg)', opacity: 0 },
       { opacity: 1, offset: 0.4 },
       { transform: 'none', opacity: 1 },
-    ], { duration: 800, delay: 1050, easing: ease, fill: 'backwards' }),
+    ], { duration: 800 * SLOW, delay: 1050 * SLOW, easing: ease, fill: 'backwards' }),
     gr.animate([
       { transform: 'translateY(-90%) scale(1.8)', opacity: 0 },
       { opacity: 1, offset: 0.3 },
       { transform: 'translateY(0) scale(.92, 1.08)', offset: 0.75 },
       { transform: 'none', opacity: 1 },
-    ], { duration: 650, delay: 1600, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
+    ], { duration: 650 * SLOW, delay: 1600 * SLOW, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
     cher.animate([
       { transform: 'translateY(-110%) rotate(-25deg) scale(1.8)', opacity: 0 },
       { opacity: 1, offset: 0.3 },
       { transform: 'translateY(0) rotate(4deg) scale(1.1, .9)', offset: 0.7 },
       { transform: 'translateY(-1.5%) rotate(-2deg)', offset: 0.85 },
       { transform: 'none', opacity: 1 },
-    ], { duration: 800, delay: 1900, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
+    ], { duration: 800 * SLOW, delay: 1900 * SLOW, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
   );
 
   let ended = false;
@@ -133,7 +248,7 @@ async function build() {
     if (ended) return;
     ended = true;
     watch.disconnect();
-    if (abort) anims.forEach((a) => a.cancel());
+    if (abort) { anims.forEach((a) => a.cancel()); tags.remove(); }
     art.classList.remove('building');
     done();
     // La foto real ya está debajo con los mismos píxeles: se quitan las piezas
@@ -145,6 +260,7 @@ async function build() {
 
 if (art && main) {
   const isDefault = main.getAttribute('src') === SRC;
-  if (reduce || !isDefault || !('animate' in Element.prototype)) done();
+  if (!isDefault || !('animate' in Element.prototype)) done();
+  else if (reduce) { done(); labels().all(); }
   else build().catch(done);
 }
