@@ -81,6 +81,7 @@ guardan los cambios; *Panel → Contenido → Restaurar original* los deshace.
 
 ## Despliegue (producción)
 
+- **URL de producción**: <https://miky-gamma.vercel.app/> (panel en `/admin/`).
 - **Front → Vercel** (repo de GitHub conectado). `vercel.json` publica sólo `front/` como sitio estático y
   reenvía `/api/*` y `/uploads/*` a `https://api-miky.cityflow.mx`; así las sesiones quedan en el dominio de Vercel.
   En Vercel: *Root Directory* vacío (`./`) y *Framework* «Other».
