@@ -3,7 +3,8 @@
    la uva y al final la cereza. Todas las piezas son recortes de la misma foto, así que al
    terminar se cambian por la imagen real sin que se note.
    Conforme llega cada ingrediente aparece su recuadro con una línea hasta donde está en la
-   tartaleta; los recuadros se ocultan al bajar (la foto gira con el scroll).
+   tartaleta; ya que están todos se quedan HOLD ms y se van (también se ocultan al bajar, porque
+   la foto gira con el scroll).
    Las coordenadas son de img/hero-tartaleta.webp (1000×929). Si el equipo cambia la imagen
    desde el panel no hay animación ni recuadros; con menos movimiento salen los recuadros fijos. */
 const SRC = 'img/hero-tartaleta.webp';
@@ -12,6 +13,7 @@ const C = { x: 500, y: 465 };            // centro del plato
 const SLICES = 14;                        // rebanadas, una por cada gajo de durazno
 const R_IN = 205, R_OUT = 700;            // anillo de duraznos (R_OUT cubre las esquinas)
 const SLOW = 1.6;                         // escala de todos los tiempos de la animación
+const HOLD = 3000;                        // cuánto se quedan los recuadros ya completos
 
 /* Ingredientes (de la descripción del catálogo): `at` es el punto en la foto, `crop` el recorte
    para la miniatura [imagen, ancho, alto, centro x, centro y, radio], `t` cuándo aparece (ms sin
@@ -171,8 +173,16 @@ function labels() {
   const api = {
     items,
     timers: [],
-    play() { this.timers = items.map((it) => setTimeout(() => show(it), it.t * SLOW)); },
-    all() { items.forEach((it) => !it.shown && show(it, false)); },
+    play() {
+      this.timers = items.map((it) => setTimeout(() => show(it), it.t * SLOW));
+      // el último recuadro termina de entrar 700 ms (sin escalar) después de su turno
+      this.leave(Math.max(...items.map((it) => it.t)) * SLOW + 700 * SLOW + HOLD);
+    },
+    all() { items.forEach((it) => !it.shown && show(it, false)); this.leave(HOLD); },
+    leave(ms) {
+      this.timers.push(setTimeout(() => wrap.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: 'forwards' })
+        .finished.then(() => api.remove()), ms));
+    },
     remove() {
       this.timers.forEach(clearTimeout); watch.disconnect(); wrap.remove();
       art.classList.remove('labeled', 'labels-off');
