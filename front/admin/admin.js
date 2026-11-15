@@ -107,6 +107,17 @@ function renderBoard(freshId) {
       </section>`;
   }).join('');
   board.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => move(Number(b.dataset.id), b.dataset.next, b)));
+  // En el celular las columnas se deslizan de lado: pestañas para saltar entre ellas
+  let tabsEl = $('#colTabs');
+  if (!tabsEl) { board.insertAdjacentHTML('beforebegin', '<div class="col-tabs" id="colTabs" role="tablist"></div>'); tabsEl = $('#colTabs'); }
+  tabsEl.innerHTML = cols.map((st, i) => `<button type="button" role="tab" data-col="${i}" aria-selected="${i === 0}">${meta.statuses[st]} <b>${orders.filter((o) => o.status === st).length}</b></button>`).join('');
+  tabsEl.querySelectorAll('[data-col]').forEach((b) => b.addEventListener('click', () => {
+    board.children[Number(b.dataset.col)].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  }));
+  board.onscroll = () => {
+    const i = Math.round(board.scrollLeft / (board.children[0]?.offsetWidth + 14 || 1));
+    tabsEl.querySelectorAll('[data-col]').forEach((b) => b.setAttribute('aria-selected', String(Number(b.dataset.col) === i)));
+  };
   const pending = orders.filter((o) => o.status === 'nuevo').length;
   const badge = $('.nav-badge');
   badge.textContent = pending;
@@ -596,15 +607,15 @@ function renderSales(sum, list) {
   $('.sales').classList.toggle('no-branch', !showBranch);
   $('#salesList').innerHTML = list.map((s) => `
     <tr class="${s.cancelled ? 'is-annulled' : ''}">
-      <td><b class="mono">${esc(s.folio)}</b>${s.customerName ? `<small>${esc(s.customerName)}</small>` : ''}</td>
-      <td>${new Date(s.createdAt).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}<small>${esc(s.user || '')}</small></td>
-      <td class="col-branch">${esc(s.branch.name)}</td>
-      <td><span class="chip ${s.channel}">${CHANNEL[s.channel]}</span></td>
-      <td>${PAY[s.paymentMethod]}</td>
-      <td class="num">${money(s.subtotal)}</td>
-      <td class="num">${money(s.iva)}</td>
-      <td class="num"><b>${money(s.total)}</b>${s.cancelled ? '<small class="annul">Anulada</small>' : ''}</td>
-      <td><button type="button" class="link" data-sale="${s.id}">Ver</button></td>
+      <td data-label="Folio"><b class="mono">${esc(s.folio)}</b>${s.customerName ? `<small>${esc(s.customerName)}</small>` : ''}</td>
+      <td data-label="Fecha">${new Date(s.createdAt).toLocaleString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}<small>${esc(s.user || '')}</small></td>
+      <td class="col-branch" data-label="Sucursal">${esc(s.branch.name)}</td>
+      <td data-label="Canal"><span class="chip ${s.channel}">${CHANNEL[s.channel]}</span></td>
+      <td data-label="Pago">${PAY[s.paymentMethod]}</td>
+      <td class="num" data-label="Subtotal">${money(s.subtotal)}</td>
+      <td class="num" data-label="IVA 16 %">${money(s.iva)}</td>
+      <td class="num t-total" data-label="Total"><b>${money(s.total)}</b>${s.cancelled ? '<small class="annul">Anulada</small>' : ''}</td>
+      <td class="t-action"><button type="button" class="link" data-sale="${s.id}">Ver detalle</button></td>
     </tr>`).join('') || '<tr><td colspan="9" class="col-empty">Sin ventas en este periodo.</td></tr>';
   $$('#salesList [data-sale]').forEach((b) => b.addEventListener('click', () => saleDetail(Number(b.dataset.sale))));
 }
@@ -809,11 +820,11 @@ async function loadUsers() {
   const branchOpts = (sel) => `<option value="">Todas</option>${branches.map((b) => `<option value="${b.id}" ${b.id === sel ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}`;
   $('#users').innerHTML = list.map((u) => `
     <tr data-id="${u.id}">
-      <td><strong>${esc(u.name)}</strong><small>${esc(u.email)}${u.lastLoginAt ? ' · entró ' + ago(u.lastLoginAt) : ''}</small></td>
-      <td><select data-f="role" ${u.id === me.id ? 'disabled' : ''}>${Object.entries(ROLE).map(([k, v]) => `<option value="${k}" ${k === u.role ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
-      <td><select data-f="branchId" ${u.role === 'cliente' ? 'disabled' : ''}>${branchOpts(u.branch?.id)}</select></td>
-      <td><input type="checkbox" data-f="active" ${u.active ? 'checked' : ''} ${u.id === me.id ? 'disabled' : ''} aria-label="Activo"></td>
-      <td><button type="button" class="link" data-reset-pass>Nueva contraseña</button></td>
+      <td class="u-who"><strong>${esc(u.name)}</strong><small>${esc(u.email)}${u.lastLoginAt ? ' · entró ' + ago(u.lastLoginAt) : ''}</small></td>
+      <td data-label="Rol"><select data-f="role" ${u.id === me.id ? 'disabled' : ''}>${Object.entries(ROLE).map(([k, v]) => `<option value="${k}" ${k === u.role ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+      <td data-label="Sucursal"><select data-f="branchId" ${u.role === 'cliente' ? 'disabled' : ''}>${branchOpts(u.branch?.id)}</select></td>
+      <td data-label="Activo"><input type="checkbox" data-f="active" ${u.active ? 'checked' : ''} ${u.id === me.id ? 'disabled' : ''} aria-label="Activo"></td>
+      <td class="t-action"><button type="button" class="link" data-reset-pass>Nueva contraseña</button></td>
     </tr>`).join('');
   $$('#users [data-f]').forEach((el) => el.addEventListener('change', async () => {
     const id = Number(el.closest('tr').dataset.id);
