@@ -116,12 +116,8 @@ html.pm-lock { overflow: hidden; }
 /* Existencias de la presentación elegida y calificación */
 .pm-extra { margin-top: 18px; display: grid; gap: 10px; }
 .pm-extra[hidden] { display: none; }
-.pm-stock { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; color: var(--muted); }
-.pm-stock::before { content: ''; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.pm-stock { margin: 0; font-size: 14px; color: var(--muted); }
 .pm-stock strong { color: var(--ink); font-weight: 600; }
-.pm-stock.ok::before { background: #3aa76d; box-shadow: 0 0 0 4px rgba(58, 167, 109, .15); }
-.pm-stock.low::before { background: #e3a21a; box-shadow: 0 0 0 4px rgba(227, 162, 26, .18); }
-.pm-stock.out::before { background: #d4543f; }
 .pm-stock.out strong { color: #b8432f; }
 .pm-stock.loading { opacity: .7; }
 

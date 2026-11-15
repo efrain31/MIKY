@@ -64,7 +64,7 @@ function swatchCard(d, i, side) {
       <span class="sw-chip"></span>
       <img class="sw-photo" src="${d.image}" alt="" loading="lazy" width="400" height="500">
       <span class="sw-label">
-        <strong class="sw-code">MIKY<sup>®</sup> ${code}</strong>
+        <!-- Código tipo Pantone oculto por ahora: <strong class="sw-code">MIKY<sup>®</sup> ${code}</strong> -->
         <span class="sw-name">${esc(d.name)}</span>
         <span class="sw-meta">${esc(tone)} · desde $${from}</span>
       </span>
