@@ -58,3 +58,29 @@ spec:
                 name: miky-api
                 port:
                   number: 80
+---
+# ⚠️ SÓLO DESARROLLO: nombre sin DNS propio (sslip.io → 45.232.252.81) y SIN cifrar (HTTP).
+# Vercel → este nombre viaja en texto plano. Antes de usar datos reales, crear api-miky.cityflow.mx en
+# Cloudflare (ingress «miky-api» de arriba), cambiar vercel.json a https://api-miky.cityflow.mx y borrar este bloque.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: miky-api-dev
+  namespace: miky
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "7m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+spec:
+  ingressClassName: public
+  rules:
+    - host: api-miky.45-232-252-81.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: miky-api
+                port:
+                  number: 80

@@ -3,8 +3,8 @@
   "framework": null,
   "outputDirectory": "front",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://api-miky.cityflow.mx/api/:path*" },
-    { "source": "/uploads/:path*", "destination": "https://api-miky.cityflow.mx/uploads/:path*" }
+    { "source": "/api/:path*", "destination": "http://api-miky.45-232-252-81.sslip.io/api/:path*" },
+    { "source": "/uploads/:path*", "destination": "http://api-miky.45-232-252-81.sslip.io/uploads/:path*" }
   ],
   "headers": [
     {
