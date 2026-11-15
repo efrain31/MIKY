@@ -132,6 +132,16 @@ section > .wrap { position: relative; z-index: 1; }
 }
 .dot-badge { position: absolute; top: 6%; right: 18%; width: 46px; height: 46px; border-radius: 50%; background: #fff; box-shadow: 0 10px 24px rgba(64, 50, 47, .12); }
 
+/* Armado de la tartaleta al abrir (js/hero-intro.js). Mientras no termina, la foto real, el pastel de
+   zanahoria y el punto quedan ocultos; si el JS falla, aparecen solos a los 3.5 s. */
+.js .hero-art:not(.built) :is(.hero-main, .hero-side, .dot-badge) { opacity: 0; animation: hero-failsafe 0s 3.5s forwards; }
+.hero-art.built .hero-side, .hero-art.built .dot-badge { animation: hero-pop .6s cubic-bezier(.2, .9, .25, 1.15) both; }
+.hero-art.built .dot-badge { animation-delay: .15s; }
+@keyframes hero-failsafe { to { opacity: 1; } }
+@keyframes hero-pop { from { opacity: 0; scale: .6; } }
+.build-stage { position: absolute; left: 4%; top: 50%; width: 92%; aspect-ratio: 1000 / 929; translate: 0 -50%; pointer-events: none; filter: drop-shadow(0 30px 40px rgba(64, 50, 47, .25)); }
+.build-piece { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform, opacity; }
+
 .scroll-hint { position: absolute; left: 50%; bottom: 26px; width: 26px; height: 42px; margin-left: -13px; border: 2px solid var(--line); border-radius: 14px; }
 .scroll-hint span { position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--coral); animation: hint 1.8s infinite; }
 @keyframes hint { 0% { opacity: 0; transform: translateY(0); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }

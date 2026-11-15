@@ -1,0 +1,150 @@
+/* Portada: al abrir la página la tartaleta se arma.
+   Las rebanadas de durazno llegan desde fuera y se unen; luego caen el centro (piña y kiwi),
+   la uva y al final la cereza. Todas las piezas son recortes de la misma foto, así que al
+   terminar se cambian por la imagen real sin que se note.
+   Las coordenadas son de img/hero-tartaleta.webp (1000×929). Si el equipo cambia la imagen
+   desde el panel, o se pide menos movimiento, se muestra la foto sin animación. */
+const SRC = 'img/hero-tartaleta.webp';
+const W = 1000, H = 929;
+const C = { x: 500, y: 465 };            // centro del plato
+const SLICES = 14;                        // rebanadas, una por cada gajo de durazno
+const R_IN = 205, R_OUT = 700;            // anillo de duraznos (R_OUT cubre las esquinas)
+
+const art = document.querySelector('.hero-art');
+const main = art?.querySelector('.hero-main');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const pct = (x, y) => `${(x / W * 100).toFixed(2)}% ${(y / H * 100).toFixed(2)}%`;
+const pt = (cx, cy, r, a) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+const circle = (cx, cy, r, from = 0, to = Math.PI * 2, n = 28) =>
+  Array.from({ length: n + 1 }, (_, i) => pt(cx, cy, r, from + (to - from) * i / n));
+const poly = (pts) => `polygon(${pts.map(([x, y]) => pct(x, y)).join(',')})`;
+
+
+// Con «evenodd» cada figura después de la primera es un hueco (el centro deja libres la uva y la cereza)
+const holes = (outer, ...inner) => `polygon(evenodd,${[outer, ...inner.map((h) => [...h, h[0], outer[0]])]
+  .flat().map(([x, y]) => pct(x, y)).join(',')})`;
+
+const GRAPE = { x: 547, y: 395, r: 60 };
+const CHERRY = { x: 493, y: 482, r: 44 };
+// Cereza con su rabito: la bolita sin el gajo de abajo y el tallo, que termina sobre un durazno
+const cherry = [
+  ...circle(CHERRY.x, CHERRY.y, CHERRY.r, Math.PI * 0.64, Math.PI * 2.36, 24),
+  [500, 528], [497, 560], [490, 600], [486, 630], [480, 660], [477, 680], [472, 694],
+  [452, 692], [460, 668], [468, 640], [474, 610], [477, 580], [482, 550], [476, 526],
+];
+// Punta del rabito que cae dentro del anillo de duraznos (más allá de R_IN)
+const stemTip = [[479, 670], [472, 696], [450, 694], [460, 670]];
+const STEM_TIP = Math.atan2(692 - C.y, 462 - C.x);
+const grape = circle(GRAPE.x, GRAPE.y, GRAPE.r);
+// El hueco del centro sólo llega hasta su borde (lo de más allá ya lo deja la rebanada)
+const cherryCore = [...cherry.slice(0, -14), [500, 528], [497, 560], [490, 600], [486, 630], [479, 666],
+  [461, 666], [468, 640], [474, 610], [477, 580], [482, 550], [476, 526]];
+
+// La rebanada donde termina el rabito lo deja hueco: la punta llega con la cereza
+function slice(i) {
+  const a0 = (i / SLICES) * Math.PI * 2 - Math.PI / 2, a1 = a0 + Math.PI * 2 / SLICES;
+  const pts = [...circle(C.x, C.y, R_OUT, a0, a1, 6), ...circle(C.x, C.y, R_IN, a1, a0, 6)];
+  const tip = (STEM_TIP - a0 + Math.PI * 4) % (Math.PI * 2);
+  return tip < a1 - a0 ? holes([...pts, pts[0]], stemTip) : poly(pts);
+}
+
+function piece(clip, cls, [ox, oy]) {
+  const img = document.createElement('img');
+  img.src = SRC; img.alt = ''; img.className = `build-piece ${cls}`;
+  img.style.clipPath = clip;
+  img.style.transformOrigin = pct(ox, oy);   // gira y escala sobre su propio centro
+  return img;
+}
+
+// Bajo los huecos del centro va otro trozo de la misma foto (kiwi y piña de al lado), recorrido
+// FILL px, para que mientras caen la uva y la cereza se vea tartaleta y no el plato vacío
+const FILL = { x: 98, y: 52 };
+const shift = (pts) => pts.map(([x, y]) => [x - FILL.x, y - FILL.y]);
+function filler(pts) {
+  const img = piece(poly(shift(pts)), 'fill', [0, 0]);
+  img.style.translate = `${FILL.x / W * 100}% ${FILL.y / H * 100}%`;
+  return img;
+}
+
+function done() { art.classList.add('built'); }
+
+async function build() {
+  const stage = document.createElement('div');
+  stage.className = 'build-stage';
+  stage.setAttribute('aria-hidden', 'true');
+
+  const slices = Array.from({ length: SLICES }, (_, i) => piece(slice(i), 'slice', [C.x, C.y]));
+  const center = document.createElement('div');
+  center.className = 'build-piece';
+  center.style.transformOrigin = pct(500, 450);
+  center.append(
+    filler(circle(GRAPE.x, GRAPE.y, GRAPE.r + 6)),
+    filler([...circle(CHERRY.x, CHERRY.y, CHERRY.r + 6, Math.PI * 0.6, Math.PI * 2.4, 24),
+      [506, 528], [503, 560], [496, 600], [492, 630], [486, 660], [483, 680], [478, 700],
+      [446, 698], [454, 668], [462, 640], [468, 610], [471, 580], [476, 550], [470, 526]]),
+    piece(holes(circle(500, 450, 222, 0, Math.PI * 2, 48), grape, cherryCore), 'center', [500, 450]));
+  const gr = piece(poly(grape), 'grape', [GRAPE.x, GRAPE.y]);
+  const cher = piece(poly(cherry), 'cherry', [CHERRY.x, CHERRY.y]);
+  stage.append(...slices, center, gr, cher);
+
+  await slices[0].decode();
+  art.append(stage);
+  art.classList.add('building');
+
+  // Si el panel cambia la foto a media animación, se corta y queda la nueva
+  const watch = new MutationObserver(() => finish(true));
+  watch.observe(main, { attributes: true, attributeFilter: ['src'] });
+
+  const ease = 'cubic-bezier(.2, .9, .25, 1.12)';
+  const anims = slices.map((el, i) => {
+    const a = ((i + 0.5) / SLICES) * Math.PI * 2 - Math.PI / 2;
+    const d = 70 + (i % 3) * 14;
+    const turn = (i % 2 ? 1 : -1) * (24 + (i % 4) * 9);
+    return el.animate([
+      { transform: `translate(${(Math.cos(a) * d).toFixed(1)}%, ${(Math.sin(a) * d).toFixed(1)}%) rotate(${turn}deg) scale(.7)`, opacity: 0 },
+      { opacity: 1, offset: 0.35 },
+      { transform: 'none', opacity: 1 },
+    ], { duration: 950, delay: 120 + i * 55, easing: ease, fill: 'backwards' });
+  });
+  anims.push(
+    center.animate([
+      { transform: 'scale(1.7) rotate(-90deg)', opacity: 0 },
+      { opacity: 1, offset: 0.4 },
+      { transform: 'none', opacity: 1 },
+    ], { duration: 800, delay: 1050, easing: ease, fill: 'backwards' }),
+    gr.animate([
+      { transform: 'translateY(-90%) scale(1.8)', opacity: 0 },
+      { opacity: 1, offset: 0.3 },
+      { transform: 'translateY(0) scale(.92, 1.08)', offset: 0.75 },
+      { transform: 'none', opacity: 1 },
+    ], { duration: 650, delay: 1600, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
+    cher.animate([
+      { transform: 'translateY(-110%) rotate(-25deg) scale(1.8)', opacity: 0 },
+      { opacity: 1, offset: 0.3 },
+      { transform: 'translateY(0) rotate(4deg) scale(1.1, .9)', offset: 0.7 },
+      { transform: 'translateY(-1.5%) rotate(-2deg)', offset: 0.85 },
+      { transform: 'none', opacity: 1 },
+    ], { duration: 800, delay: 1900, easing: 'cubic-bezier(.4, 0, .3, 1)', fill: 'backwards' }),
+  );
+
+  let ended = false;
+  function finish(abort = false) {
+    if (ended) return;
+    ended = true;
+    watch.disconnect();
+    if (abort) anims.forEach((a) => a.cancel());
+    art.classList.remove('building');
+    done();
+    // La foto real ya está debajo con los mismos píxeles: se quitan las piezas
+    stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: abort ? 0 : 250, fill: 'forwards' })
+      .finished.then(() => stage.remove());
+  }
+  Promise.all(anims.map((a) => a.finished)).then(() => finish(), () => {});
+}
+
+if (art && main) {
+  const isDefault = main.getAttribute('src') === SRC;
+  if (reduce || !isDefault || !('animate' in Element.prototype)) done();
+  else build().catch(done);
+}
