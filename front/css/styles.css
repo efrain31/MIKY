@@ -519,7 +519,7 @@ section > .wrap { position: relative; z-index: 1; }
 }
 .sw-code { font: 700 15px/1.2 var(--sans); letter-spacing: .02em; }
 .sw-code sup { font-size: 8px; font-weight: 500; margin-right: 1px; }
-.sw-name { font-size: 14.5px; line-height: 1.35; margin-top: 3px; }
+.sw-name { font-size: 14.5px; line-height: 1.35; margin-top: 3px; font-weight: 700; }
 .sw-meta { margin-top: auto; padding-top: 10px; font-size: 12px; color: var(--muted); }
 
 /* la foto se sale de la muestra hacia afuera, como en el muestrario */
