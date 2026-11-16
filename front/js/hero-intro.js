@@ -214,8 +214,9 @@ async function build() {
   await slices[0].decode();
   art.append(stage);
   art.classList.add('building');
-  const tags = labels();
-  tags.play();
+  // Recuadros de ingredientes ocultos por ahora:
+  // const tags = labels();
+  // tags.play();
 
   // Si el panel cambia la foto a media animación, se corta y queda la nueva
   const watch = new MutationObserver(() => finish(true));
@@ -258,7 +259,7 @@ async function build() {
     if (ended) return;
     ended = true;
     watch.disconnect();
-    if (abort) { anims.forEach((a) => a.cancel()); tags.remove(); }
+    if (abort) { anims.forEach((a) => a.cancel()); /* tags.remove(); */ }
     art.classList.remove('building');
     done();
     // La foto real ya está debajo con los mismos píxeles: se quitan las piezas
@@ -271,7 +272,7 @@ async function build() {
 if (art && main) {
   const isDefault = main.getAttribute('src') === SRC;
   if (!isDefault || !('animate' in Element.prototype)) done();
-  else if (reduce) { done(); labels().all(); }
+  else if (reduce) done(); // { done(); labels().all(); } — recuadros ocultos por ahora
   // espera a que se vaya el splash de index.html
   else (window.mikySplash || Promise.resolve()).then(build).catch(done);
 }
