@@ -169,6 +169,7 @@ html.pm-lock { overflow: hidden; }
 @keyframes pmHeart { 50% { transform: scale(1.35); } }
 .pm-add.done { animation: pmAdded .6s ease; }
 @keyframes pmAdded { 30% { transform: scale(.96); background: #3aa76d; } 100% { background: var(--coral); } }
+.pm-more { display: none; }   /* aviso «desliza»: sólo en la hoja de móvil */
 .pm-note { order: 10; margin: 16px 0 0; font-size: 12px; color: var(--muted); }
 
 /* ==========================================================
@@ -232,8 +233,20 @@ html.pm-lock { overflow: hidden; }
   .pm-qty { height: 46px; }
   .pm-icon { width: 46px; height: 46px; }
   .pm-note { order: 0; margin: 14px 0 4px; }
+
+  /* aviso de que hay más abajo (descripción, tamaños, existencias, estrellas) */
+  .pm-more {
+    display: flex; position: absolute; left: 50%; bottom: calc(100% + 10px);
+    align-items: center; gap: 6px; padding: 7px 14px 7px 16px; border: 0; border-radius: 999px;
+    background: var(--ink); color: #fff; font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap;
+    box-shadow: 0 6px 18px rgba(64, 50, 47, .25); cursor: pointer;
+    opacity: 0; pointer-events: none; transform: translate(-50%, 6px); transition: opacity .25s, transform .25s;
+  }
+  .pm-more svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; animation: pmBounce 1.2s ease-in-out infinite; }
+  .pm-has-more .pm-more { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  @keyframes pmBounce { 50% { transform: translateY(3px); } }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pm[open] .pm-sheet, .pm::backdrop, .pm-img.pm-in { animation: none; }
+  .pm[open] .pm-sheet, .pm::backdrop, .pm-img.pm-in, .pm-more svg { animation: none; }
 }

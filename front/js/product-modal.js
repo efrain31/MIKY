@@ -85,6 +85,8 @@ window.ProductModal = (() => {
 
           <p class="pm-note">Precios en sucursal, sujetos a cambio sin previo aviso.</p>
           <div class="pm-buy">
+          <button class="pm-more" type="button" tabindex="-1" aria-hidden="true">Desliza para ver más
+            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="pm-price-row">
             <div>
               <span class="pm-price"></span>
@@ -189,7 +191,18 @@ window.ProductModal = (() => {
       selectSize((sizeIdx + d + n) % n, true);
     });
 
+    // aviso «desliza para ver más»: sólo mientras quede contenido escondido bajo el botón
+    ui.sheet.addEventListener('scroll', paintMore, { passive: true });
+    addEventListener('resize', paintMore);
+    dlg.querySelector('.pm-more').addEventListener('click', () => ui.sheet.scrollBy({ top: ui.sheet.clientHeight * .6, behavior: 'smooth' }));
+
     bindGestures();
+  }
+
+  function paintMore() {
+    if (!dlg?.open) return;
+    const s = ui.sheet;
+    dlg.classList.toggle('pm-has-more', s.scrollTop < 40 && s.scrollHeight - s.clientHeight > 40);
   }
 
   /* ---------- pintar un producto ---------- */
@@ -238,6 +251,7 @@ window.ProductModal = (() => {
       summary = s;
     } catch { if (p !== current) return; summary = { failed: true }; }
     paintStock(); paintRating();
+    paintMore();
   }
 
   function paintStock() {
@@ -321,6 +335,7 @@ window.ProductModal = (() => {
       dlg.classList.remove('pm-closing');
       dlg.showModal();
       ui.sheet.scrollTop = 0;
+      requestAnimationFrame(paintMore);
       if (origin && !reduceMotion) flyFrom(origin);
     }
     if (!fromHistory) {
