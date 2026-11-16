@@ -7,6 +7,7 @@ import accountRoutes from './routes/account.js';
 import staffRoutes from './routes/staff.js';
 import { content, users } from './routes/admin.js';
 import salesRoutes from './routes/sales.js';
+import reportRoutes from './routes/reports.js';
 import { migrate } from './migrate.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.get('/api/health', async (_req, res) => {
 app.use('/api', publicRoutes);
 app.use('/api', accountRoutes);
 app.use('/api/staff/sales', salesRoutes);
+app.use('/api/staff/reports', reportRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/admin/content', content);
 app.use('/api/admin/users', users);

@@ -74,6 +74,8 @@ export const api = {
   createSale: (data) => post('/staff/sales', data),
   annulSale: (id, reason, restock) => post(`/staff/sales/${id}/annul`, { reason, restock }),
   staffBranches: () => get('/staff/branches'),
+  reports: () => get('/staff/reports'),
+  report: (key, qs) => get(`/staff/reports/${key}?${qs}`),
   inventory: (branchId) => get(`/staff/inventory?branch=${branchId}`),
   adjustInventory: (data) => post('/staff/inventory/adjust', data),
   movements: (branchId) => get(`/staff/inventory/movements?branch=${branchId}`),

@@ -1,6 +1,7 @@
 /* Panel de operación: pedidos en vivo, inventario por sucursal, contenido del sitio y usuarios.
    Lo que ve cada quien depende de su rol (el back también lo valida en cada petición). */
 import { api, money, esc, toast } from '/js/api.js';
+import { loadReports } from '/admin/reports.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -79,7 +80,7 @@ function go(view) {
   $$('.side-nav button').forEach((b) => b.classList.toggle('is-active', b.dataset.view === view));
   $$('.view').forEach((v) => { v.hidden = v.id !== `v-${view}`; });
   history.replaceState(null, '', `#${view}`);
-  ({ orders: loadOrders, inventory: loadInventory, sales: loadSales, content: loadContent, users: loadUsers })[view]();
+  ({ orders: loadOrders, inventory: loadInventory, sales: loadSales, reports: () => loadReports(me, branches), content: loadContent, users: loadUsers })[view]();
 }
 
 /* =================== pedidos =================== */

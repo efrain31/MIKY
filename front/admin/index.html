@@ -41,6 +41,9 @@
         <button data-view="sales" data-need="canSeeSales" hidden>
           <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Ventas</span>
         </button>
+        <button data-view="reports">
+          <svg viewBox="0 0 24 24"><path d="M14 3H6v18h12V7zM14 3v4h4M9 17v-3M12 17v-6M15 17v-4"/></svg><span>Reportes</span>
+        </button>
         <button data-view="content" data-need="canEditSite" hidden>
           <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></svg><span>Contenido</span>
         </button>
@@ -118,6 +121,28 @@
         <div class="table-wrap"><table class="users sales"><thead><tr>
           <th>Folio</th><th>Fecha</th><th class="col-branch">Sucursal</th><th>Canal</th><th>Pago</th><th class="num">Subtotal</th><th class="num">IVA 16 %</th><th class="num">Total</th><th></th>
         </tr></thead><tbody id="salesList"></tbody></table></div>
+      </section>
+
+      <!-- Reportes -->
+      <section class="view" id="v-reports" hidden>
+        <header class="v-head">
+          <div><h1>Reportes</h1><p class="v-sub">Descarga cualquier reporte en CSV, Excel o PDF. Usan la sucursal y el periodo que elijas.</p></div>
+        </header>
+        <div class="s-filters">
+          <select class="r-branch" aria-label="Sucursal"></select>
+          <div class="seg r-period" role="tablist" aria-label="Periodo">
+            <button role="tab" aria-selected="false" data-p="today">Hoy</button>
+            <button role="tab" aria-selected="false" data-p="7d">7 días</button>
+            <button role="tab" aria-selected="true" data-p="month">Este mes</button>
+            <button role="tab" aria-selected="false" data-p="last">Mes pasado</button>
+            <button role="tab" aria-selected="false" data-p="range">Rango</button>
+            <button role="tab" aria-selected="false" data-p="all">Todo</button>
+          </div>
+          <span class="s-range r-range" hidden>
+            <input type="date" class="r-from" aria-label="Desde"> – <input type="date" class="r-to" aria-label="Hasta">
+          </span>
+        </div>
+        <div id="reports"></div>
       </section>
 
       <!-- Contenido -->

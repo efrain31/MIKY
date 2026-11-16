@@ -432,3 +432,20 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   .cards2 { gap: 14px; }
   .card { padding: 18px; }
 }
+
+/* ---------- Reportes ---------- */
+.r-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.r-card { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; }
+.r-info h3 { margin: 0 0 4px; font-size: 16px; }
+.r-info p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.r-when { display: block; margin-top: 8px; font-size: 12px; color: var(--coral-dark); font-weight: 600; }
+.r-when:not(.dated) { color: var(--muted); font-weight: 500; }
+.r-btns { display: flex; gap: 8px; margin-top: auto; }
+.r-btns .btn { flex: 1; padding: 0 10px; }
+.r-btns .btn:disabled { opacity: .6; cursor: progress; }
+#reports .h2:first-child { margin-top: 8px; }
+@media (max-width: 860px) {
+  .r-grid { grid-template-columns: 1fr; }
+  .r-btns .btn { min-height: 44px; font-size: 14px; }
+  .r-period { flex-wrap: wrap; border-radius: 18px; }
+}
