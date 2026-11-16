@@ -122,15 +122,20 @@ export function toast(message, type = 'ok', ms = 3200) {
   const t = document.createElement('div');
   t.className = `toast toast-${type}`;
   t.textContent = message;
+  t.title = 'Toca para cerrar';
   toastBox.appendChild(t);
   bringToFront();
-  setTimeout(() => {
+  const dismiss = () => {
+    if (t.classList.contains('out')) return;
     t.classList.add('out');
     setTimeout(() => {
       t.remove();
       if (!toastBox.children.length && toastBox.popover) { try { toastBox.hidePopover(); } catch { /* ya oculto */ } }
     }, 300);
-  }, ms);
+  };
+  // se va solo después de ms, o antes si se toca/da clic
+  t.addEventListener('click', (e) => { e.stopPropagation(); dismiss(); });
+  setTimeout(dismiss, ms);
 }
 
 function bringToFront() {
