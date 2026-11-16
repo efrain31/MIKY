@@ -37,7 +37,8 @@ export const api = {
   branches: () => get('/branches'),
   stock: (branchId) => get(`/branches/${branchId}/stock`),
   productSummary: (productId) => get(`/products/${productId}/summary`),
-  content: () => get('/content'),
+  // fresh: se salta la caché del borde (panel y modo edición ven sus cambios al momento)
+  content: (fresh = false) => get(fresh ? `/content?t=${Date.now()}` : '/content'),
 
   // Cuenta
   me: () => get('/auth/me'),

@@ -11,7 +11,7 @@ let bar;
 export async function initCms() {
   // 1) Aplica lo que el equipo ya cambió
   try {
-    const content = await api.content();
+    const content = await api.content(new URLSearchParams(location.search).has('editar'));
     textEls().forEach((el) => { const c = content[el.dataset.cms]; if (c?.kind === 'text') el.innerText = c.value; });
     imgEls().forEach((el) => {
       const c = content[el.dataset.cmsImg];

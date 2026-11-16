@@ -6,6 +6,11 @@ import { ratingSummary } from '../ratings.js';
 
 const r = Router();
 
+// Lo público e igual para todos: Vercel lo guarda unos segundos en su borde y el navegador siempre revalida.
+// Un cambio de precio, foto o texto tarda a lo mucho ese tiempo en verse.
+const edgeCache = (res, seconds) =>
+  res.set('Cache-Control', `public, max-age=0, s-maxage=${seconds}, stale-while-revalidate=${seconds * 5}`);
+
 /** Catálogo completo: categorías → productos → presentaciones con precio. */
 r.get('/catalog', async (_req, res) => {
   const [cats, prods, vars] = await Promise.all([
@@ -17,7 +22,7 @@ r.get('/catalog', async (_req, res) => {
   ]);
   const byProduct = Map.groupBy(vars.rows, (v) => v.product_id);
   const products = prods.rows.map((p) => productDto(p, byProduct.get(p.id) || []));
-  res.set('Cache-Control', 'no-cache');
+  edgeCache(res, 60);
   res.json({
     categories: cats.rows.map((c) => ({ slug: c.slug, name: c.name })),
     products,
@@ -26,6 +31,7 @@ r.get('/catalog', async (_req, res) => {
 
 r.get('/branches', async (_req, res) => {
   const { rows } = await query('SELECT * FROM branches WHERE active ORDER BY sort, id');
+  edgeCache(res, 60);
   res.json(rows.map(branchDto));
 });
 
@@ -63,7 +69,7 @@ r.get('/products/:id/summary', async (req, res) => {
 /** Textos e imágenes del sitio que el admin/supervisor cambió. */
 r.get('/content', async (_req, res) => {
   const { rows } = await query('SELECT key, kind, value FROM site_content');
-  res.set('Cache-Control', 'no-cache');
+  edgeCache(res, 30);
   res.json(Object.fromEntries(rows.map((x) => [x.key, { kind: x.kind, value: x.value }])));
 });
 

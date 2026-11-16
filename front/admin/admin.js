@@ -791,7 +791,7 @@ async function newSale() {
 
 /* =================== contenido =================== */
 async function loadContent() {
-  const content = await api.content().catch(() => ({}));
+  const content = await api.content(true).catch(() => ({}));
   const entries = Object.entries(content);
   $('#edits').innerHTML = entries.length ? entries.map(([k, c]) => `
     <li>

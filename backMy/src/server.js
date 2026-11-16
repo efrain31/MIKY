@@ -31,8 +31,9 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/admin/content', content);
 app.use('/api/admin/users', users);
 
-// En Docker nginx sirve /uploads; esto es para correr el back solo en desarrollo.
-app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '7d', fallthrough: false }));
+// Fotos subidas desde el panel (en el servidor las sirve el back; en Docker local, nginx).
+// Cada subida tiene nombre nuevo, así que nunca cambian: caché de un año.
+app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '365d', immutable: true, fallthrough: false }));
 
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada.' }));
 
