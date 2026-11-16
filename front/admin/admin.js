@@ -51,7 +51,9 @@ function startApp() {
   $('.me-name').textContent = me.name;
   $('.me-role').textContent = `${ROLE[me.role]}${me.branch ? ' · ' + me.branch.name : ' · todas las sucursales'}`;
   $$('[data-need]').forEach((b) => { b.hidden = !meta[b.dataset.need]; });
-  $('.main').insertAdjacentHTML('afterbegin', `<div class="mobile-user"><span>${esc(me.name)} · ${ROLE[me.role]}</span><button type="button" class="link logout">Cerrar sesión</button></div>`);
+  $('.me-mail').textContent = me.email || '';
+  $('.me-short').textContent = me.name.split(' ')[0];
+  setupSide();
   $$('.logout').forEach((b) => b.addEventListener('click', async () => { await api.logout().catch(() => {}); location.reload(); }));
 
   // filtros de sucursal (si no tiene una asignada)
@@ -74,10 +76,45 @@ function startApp() {
   go(location.hash.slice(1) || 'orders');
 }
 
+/* Menú lateral: se encoge a sólo íconos (se recuerda) y el botón de usuario abre su menú */
+function setupSide() {
+  const app = $('#app'), tg = $('.side-toggle');
+  const paint = (closed) => {
+    app.classList.toggle('side-closed', closed);
+    const label = closed ? 'Abrir menú' : 'Cerrar menú';
+    tg.setAttribute('aria-expanded', String(!closed));
+    tg.setAttribute('aria-label', label); tg.title = label;
+  };
+  let closed = false;
+  try { closed = localStorage.getItem('miky.side') === 'closed'; } catch { /* sin almacenamiento */ }
+  paint(closed);
+  tg.addEventListener('click', () => {
+    closed = !app.classList.contains('side-closed');
+    paint(closed);
+    try { localStorage.setItem('miky.side', closed ? 'closed' : 'open'); } catch { /* sin almacenamiento */ }
+  });
+  // nombres como tooltip cuando sólo se ven los íconos
+  $$('.side-nav button').forEach((b) => { b.title = b.querySelector('span').textContent; });
+
+  // el menú de usuario es un popover: se coloca junto al botón (arriba en el celular)
+  const btn = $('.side-me'), menu = $('#me-menu');
+  menu.addEventListener('toggle', (e) => {
+    btn.setAttribute('aria-expanded', String(e.newState === 'open'));
+    if (e.newState !== 'open') return;
+    const r = btn.getBoundingClientRect(), m = menu.getBoundingClientRect();
+    const mobile = matchMedia('(max-width: 860px)').matches;
+    menu.style.left = `${Math.max(8, Math.min(mobile ? r.right - m.width : r.left, innerWidth - m.width - 8))}px`;
+    menu.style.top = `${Math.max(8, mobile ? r.top - m.height - 8 : r.top - m.height - 8)}px`;
+  });
+  // en el celular la barra se desliza: deja visible la opción activa
+  $('.side-nav .is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+
 function go(view) {
   const btn = $(`.side-nav [data-view="${view}"]`);
   if (!btn || btn.hidden) view = 'orders';
   $$('.side-nav button').forEach((b) => b.classList.toggle('is-active', b.dataset.view === view));
+  $('.side-nav .is-active')?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
   $$('.view').forEach((v) => { v.hidden = v.id !== `v-${view}`; });
   history.replaceState(null, '', `#${view}`);
   ({ orders: loadOrders, inventory: loadInventory, sales: loadSales, reports: () => loadReports(me, branches), content: loadContent, users: loadUsers })[view]();
