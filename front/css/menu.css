@@ -129,11 +129,32 @@
   .mp-branch select { text-overflow: ellipsis; }
   .mp-search svg, .mp-branch svg { left: 13px; }
   .mp-group { padding-top: 24px; }
-  .mp-grid { grid-template-columns: repeat(2, 1fr); gap: 46px 14px; padding-top: 40px; }
-  .mc-label { padding: 11px 12px 12px; }
-  .mc-desc { font-size: 11.5px; }
-  .mcard .sw-cta { margin-top: 9px; }
-  .mc-stock { left: 7px; bottom: 7px; font-size: 10px; padding: 2px 7px; }
+
+  /* móvil: dos columnas escalonadas, tarjeta blanca redondeada con la foto en un plato que sobresale */
+  .mp-grid { grid-template-columns: repeat(2, 1fr); gap: 62px 16px; padding: 58px 0 96px; }
+  .mp-grid .mcard:nth-child(even) { top: 84px; }   /* la columna derecha va media tarjeta más abajo */
+  .mcard {
+    align-items: center; text-align: center;
+    background: #fff; border-radius: var(--radius);
+    box-shadow: 0 22px 34px -22px rgba(64, 50, 47, .38), 0 1px 0 rgba(64, 50, 47, .04);
+    transition: transform .2s, background-color .25s, box-shadow .25s;
+  }
+  .mcard:hover { transform: none; }
+  .mcard:active { transform: scale(.96); background: var(--coral-soft); }
+  .mc-chip {
+    width: 78%; aspect-ratio: 1; margin-top: -46px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .28), transparent 60%), var(--c);
+    box-shadow: 0 14px 22px -12px rgba(64, 50, 47, .5), inset 0 0 0 5px rgba(255, 255, 255, .3);
+  }
+  .mc-photo { top: 6%; width: 92%; filter: drop-shadow(0 8px 8px rgba(64, 50, 47, .25)); }
+  .mcard:hover .mc-photo, .mcard:focus-visible .mc-photo { transform: translateX(-50%) rotate(var(--r)); }
+  .mc-label { width: 100%; align-items: center; padding: 10px 10px 16px; background: none; border-radius: 0 0 var(--radius) var(--radius); }
+  .mcard .sw-name { font-size: 13.5px; line-height: 1.25; }
+  .mc-desc { display: none; }
+  .mcard .sw-meta { order: 2; margin-top: 3px; padding-top: 0; font-size: 11px; }
+  .mcard .sw-meta { color: var(--muted); }
+  .mcard .sw-cta { order: 3; margin-top: 11px; align-self: center; }
+  .mc-stock { left: 50%; bottom: -8px; transform: translateX(-50%); white-space: nowrap; font-size: 10px; padding: 2px 8px; box-shadow: 0 4px 10px -4px rgba(64, 50, 47, .35); }
 }
 @media (prefers-reduced-motion: reduce) {
   .mcard { animation: none; transition: none; }
