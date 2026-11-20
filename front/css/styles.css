@@ -522,6 +522,21 @@ section > .wrap { position: relative; z-index: 1; }
 .sw-name { font-size: 14.5px; line-height: 1.35; margin-top: 3px; font-weight: 700; }
 .sw-meta { margin-top: auto; padding-top: 10px; font-size: 12px; color: var(--muted); }
 
+/* botón «Pedir»: indica que la tarjeta se toca para comprar (toda la tarjeta sigue siendo el enlace) */
+.sw-cta {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px; padding: 6px 12px 6px 10px; border-radius: 999px;
+  border: 1.5px solid var(--coral); color: var(--coral-dark); background: transparent;
+  font-size: 12.5px; font-weight: 700; line-height: 1;
+  transition: background-color .25s, color .25s, border-color .25s;
+}
+.sw-cta svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sw-cta .sw-cta-arrow { transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+.swatch:hover .sw-cta, .swatch:focus-visible .sw-cta { background: var(--coral); border-color: var(--coral); color: #fff; }
+.swatch:hover .sw-cta-arrow, .swatch:focus-visible .sw-cta-arrow { transform: translateX(3px); }
+/* sin mouse (móvil) no hay hover: la pastilla va rellena siempre */
+@media (hover: none) { .sw-cta { background: var(--coral); border-color: var(--coral); color: #fff; } }
+
 /* la foto se sale de la muestra hacia afuera, como en el muestrario */
 .sw-photo {
   position: absolute; z-index: 2; top: -22%;
@@ -577,6 +592,8 @@ section > .wrap { position: relative; z-index: 1; }
   .sw-code { font-size: 12px; }
   .sw-name { font-size: 13px; line-height: 1.3; }
   .sw-meta { font-size: 10.5px; padding-top: 6px; }
+  .sw-cta { margin-top: 7px; padding: 5px 10px 5px 8px; gap: 4px; font-size: 11px; }
+  .sw-cta svg { width: 13px; height: 13px; }
   .sw-photo { width: 96%; top: -20%; }
   .swatch.left .sw-photo { left: -20%; }
   .swatch.right .sw-photo { right: -20%; }

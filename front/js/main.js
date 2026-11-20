@@ -60,12 +60,17 @@ function swatchCard(d, i, side) {
   const tilt = [-12, 9, -7, 11, -9, 7][i % 6];
   return `
     <a class="swatch ${side}" href="#producto/${d.slug}" data-product="${d.slug}" style="--c:${color};--r:${tilt}deg"
-       aria-label="${esc(d.name)}, desde $${from}. Ver en grande">
+       aria-label="${esc(d.name)}, desde $${from}. Ver y pedir">
       <span class="sw-chip"></span>
       <img class="sw-photo" src="${d.image}" alt="" loading="lazy" width="400" height="500">
       <span class="sw-label">
         <!-- Código tipo Pantone oculto por ahora: <strong class="sw-code">MIKY<sup>®</sup> ${code}</strong> -->
         <span class="sw-name">${esc(d.name)}</span>
+        <span class="sw-cta" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          Pedir
+          <svg class="sw-cta-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
         <span class="sw-meta">${esc(tone)} · desde $${from}</span>
       </span>
     </a>`;
