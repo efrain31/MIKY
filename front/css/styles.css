@@ -210,6 +210,10 @@ section > .wrap { position: relative; z-index: 1; }
 .dish .price { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 .dish .price span { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--coral-soft); color: var(--coral-dark); }
 .menu-note { text-align: center; color: var(--muted); font-size: 13px; margin: 44px 0 0; }
+.menu-all { display: flex; justify-content: center; margin-top: 30px; }   /* «Ver todo el menú» → /menu/ */
+.menu-all .btn span { display: inline-block; transition: transform .2s; }
+.menu-all .btn:hover span { transform: translateX(4px); }
+.menu-all + .menu-note { margin-top: 18px; }
 
 /* ---------- 3. Nosotros ---------- */
 .about { padding: 100px 0; }

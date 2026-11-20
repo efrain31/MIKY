@@ -225,9 +225,12 @@ const VIEWS = {
         <div class="d-empty">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9zM9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
           <p>Tu pedido está vacío.</p>
-          <a class="btn btn-solid" href="#menu">Ver el menú</a>
+          <a class="btn btn-solid" href="/menu/">Ver el menú</a>
         </div>`;
-      body.querySelector('a').addEventListener('click', closeDrawer);
+      body.querySelector('a').addEventListener('click', (e) => {
+        if (location.pathname.startsWith('/menu')) e.preventDefault();   // ya estás en el menú
+        closeDrawer();
+      });
       return;
     }
     const total = items.reduce((s, i) => s + i.size.price * i.quantity, 0);

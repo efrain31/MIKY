@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="img/hero-tartaleta.webp">
-  <link rel="stylesheet" href="/css/styles.css?v=20261116-franjas2">
+  <link rel="stylesheet" href="/css/styles.css?v=20261120-menu">
   <link rel="stylesheet" href="/css/store.css?v=2">
   <link rel="stylesheet" href="/css/product-modal.css?v=20261116-aviso">
   <script>document.documentElement.classList.add('js')</script>
@@ -54,7 +54,7 @@
       <img src="img/logo.webp" alt="Miky" width="480" height="265">
     </a>
     <nav class="nav" aria-label="Principal">
-      <a href="#menu">Menú</a>
+      <a href="/menu/" data-sec="menu">Menú</a>
       <a href="#nosotros">Nosotros</a>
       <a href="#helados">Helados</a>
       <a href="#sucursales">Sucursales</a>
@@ -117,7 +117,7 @@
 
       <div class="wrap">
         <header class="section-head reveal">
-          <h2 data-cms="menu.title">Menú</h2>
+          <h2 data-cms="menu.title">Productos estrella</h2>
           <p data-cms="menu.subtitle">Los favoritos de todos por la combinación de sabores y textura.</p>
         </header>
 
@@ -130,12 +130,13 @@
           <span class="tabs-ink" aria-hidden="true"></span>
         </div>
 
-        <div class="swatches" id="dishes" role="region" aria-roledescription="carrusel" aria-label="Menú"></div>
+        <div class="swatches" id="dishes" role="region" aria-roledescription="carrusel" aria-label="Productos estrella"></div>
         <div class="sw-controls">
           <button class="sw-prev" type="button" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
           <div class="sw-dots" role="tablist" aria-label="Elegir par de productos"></div>
           <button class="sw-next" type="button" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
         </div>
+        <div class="menu-all"><a class="btn btn-solid" href="/menu/">Ver todo el menú <span aria-hidden="true">→</span></a></div>
         <p class="menu-note reveal">Desliza para ver más · toca un producto para verlo en grande.</p>
       </div>
     </section>
@@ -307,11 +308,11 @@
       </div>
       <div>
         <h3>Menú</h3>
-        <a href="#menu" data-goto="pasteles">Pasteles</a>
-        <a href="#menu" data-goto="pays">Pays</a>
-        <a href="#menu" data-goto="postres">Postres</a>
+        <a href="/menu/?cat=pasteles">Pasteles</a>
+        <a href="/menu/?cat=pays">Pays</a>
+        <a href="/menu/?cat=postres">Postres</a>
         <a href="#helados">Helados</a>
-        <a href="#menu" data-goto="bebidas">Bebidas</a>
+        <a href="/menu/?cat=bebidas">Bebidas</a>
       </div>
       <div>
         <h3>Información</h3>
@@ -328,7 +329,7 @@
     <p class="copy wrap">© <span id="year">2026</span> Pastelerías Miky. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Botón flotante de WhatsApp (el número se configura en js/main.js → WHATSAPP) -->
+  <!-- Botón flotante de WhatsApp (el número se configura en js/config.js → WHATSAPP) -->
   <a class="wa-float" href="https://wa.me/" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
     <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.53 1.74 6.5L3 29l6.68-1.75A12.95 12.95 0 0 0 16.04 29C23.2 29 29.03 23.18 29.03 16S23.2 3 16.04 3zm0 23.63c-1.98 0-3.92-.53-5.61-1.54l-.4-.24-3.96 1.04 1.06-3.86-.26-.4a10.6 10.6 0 0 1-1.64-5.63c0-5.86 4.77-10.63 10.64-10.63 5.86 0 10.62 4.77 10.62 10.63 0 5.86-4.77 10.63-10.45 10.63zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.72.16-.21.32-.82 1.04-1 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.18-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.65 0 1.57 1.14 3.08 1.3 3.29.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.89-.77 2.15-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg>
     <span class="wa-tip" role="tooltip">Escríbenos por WhatsApp</span>
@@ -347,7 +348,7 @@
       <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>
       <span class="tab-label">Inicio</span>
     </a>
-    <a href="#menu" class="tab" data-tab="menu" aria-label="Menú">
+    <a href="/menu/" class="tab" data-tab="menu" aria-label="Menú">
       <span class="tab-ico"><svg viewBox="0 0 24 24"><path d="M4 14h16l-1.5 6.2a1 1 0 0 1-1 .8h-11a1 1 0 0 1-1-.8zM5 14a7 7 0 0 1 14 0M12 3v4M9.5 4.5 12 7l2.5-2.5"/></svg></span>
       <span class="tab-label">Menú</span>
     </a>
@@ -367,6 +368,6 @@
 
   <script src="/js/product-modal.js?v=3" defer></script>
   <script type="module" src="/js/hero-intro.js?v=3"></script>
-  <script type="module" src="/js/main.js?v=2"></script>
+  <script type="module" src="/js/main.js?v=3"></script>
 </body>
 </html>

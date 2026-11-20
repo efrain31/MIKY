@@ -6,6 +6,7 @@ Monorepo con tres partes que corren juntas en Docker:
 miky/
 ├── front/                 Sitio público + panel del personal (HTML, CSS y JS sin frameworks), servido por nginx
 │   ├── index.html         Sitio: menú, sucursales, opiniones…
+│   ├── menu/index.html    Página «Menú»: todo el catálogo en cuadrícula, buscador y existencias por sucursal
 │   ├── js/                main.js (sitio) · store.js (cuenta, favoritos, carrito, ticket) · cms.js (edición en vivo)
 │   │                      product-modal.js (ventana de producto) · api.js (cliente del API)
 │   ├── css/               styles.css (sitio) · store.css (tienda) · product-modal.css
@@ -98,7 +99,7 @@ guardan los cambios; *Panel → Contenido → Restaurar original* los deshace.
 - Contraseñas fuertes en `.env` (no se sube a git).
 - Cambiar las **opiniones de ejemplo** y las **fotos de relleno** (`img/persona-*.webp`, de pravatar.cc)
   por reseñas y fotos reales de clientes con su permiso (lista `REVIEWS` en `front/js/main.js`).
-- Número de WhatsApp en `WHATSAPP` (`front/js/main.js`).
+- Número de WhatsApp en `WHATSAPP` (`front/js/config.js`).
 - Confirmar el teléfono de V. Carranza (33 1845 9691, lada de Guadalajara).
 
 ## API (resumen)

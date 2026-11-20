@@ -3,11 +3,7 @@
 import { api } from './api.js';
 import { initStore } from './store.js';
 import { initCms } from './cms.js';
-
-/* ---------- WhatsApp ----------
-   Pon aquí el número de Miky con lada de país, sin espacios ni signos (ej. '5233XXXXXXXX').
-   Mientras esté vacío, el botón abre WhatsApp con el mensaje listo para elegir el contacto. */
-const WHATSAPP = { number: '', message: 'Hola Miky, me gustaría hacer un pedido 🎂' };
+import { whatsappUrl } from './config.js';   // número de WhatsApp
 
 /* ---------- Datos desde el back ---------- */
 let catalog = { categories: [], products: [] }, branches = [];
@@ -170,7 +166,6 @@ new IntersectionObserver(([e]) => { carousel.visible = e.isIntersecting; restart
 addEventListener('resize', () => carousel.track && (carousel.track.scrollLeft = carousel.slides[carousel.index].offsetLeft));
 
 tabButtons.forEach((b) => b.addEventListener('click', () => showCategory(b.dataset.cat)));
-$$('[data-goto]').forEach((a) => a.addEventListener('click', () => showCategory(a.dataset.goto)));
 if (products.length) showCategory('pasteles');
 addEventListener('resize', () => moveInk($('.tabs [aria-selected="true"]')));
 document.fonts?.ready.then(() => moveInk($('.tabs [aria-selected="true"]')));
@@ -409,7 +404,7 @@ function setActive(id) {
   if (i < 0) return;
   tabs.forEach((t) => t.classList.toggle('active', t.dataset.tab === id));
   tabs.forEach((t) => t.toggleAttribute('aria-current', t.dataset.tab === id));
-  navLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+  navLinks.forEach((a) => a.classList.toggle('active', (a.dataset.sec ? '#' + a.dataset.sec : a.getAttribute('href')) === '#' + id));
   tabbar.style.setProperty('--nx', (i * 20 + 10) + '%');
 }
 
@@ -444,5 +439,5 @@ addEventListener('scroll', () => {
   setTimeout(() => jumpBtn.classList.remove('tip-on'), 4500);
 }, { passive: true });
 
-$('.wa-float').href = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.message)}`;
+$('.wa-float').href = whatsappUrl();
 $('#year').textContent = new Date().getFullYear();
